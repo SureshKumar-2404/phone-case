@@ -1,0 +1,352 @@
+#root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+
+#root a:hover {
+  color: #535bf2;
+}
+
+#root body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+#root button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+#root button:hover {
+  border-color: #646cff;
+}
+
+#root button:focus,
+#root button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  #root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  #root a:hover {
+    color: #747bff;
+  }
+
+  #root button {
+    background-color: #f9f9f9;
+  }
+}
+
+#root .selector-container {
+  margin-bottom: 10px;
+}
+
+#root .text-center {
+  text-align: center;
+}
+
+#root .text-md-left {
+  text-align: left;
+}
+
+#root .inputbox::placeholder {
+  font: 1.2rem/3 sans-serif;
+}
+
+#root .circle-button {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#root .square-box {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+}
+
+#root .item {
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+}
+
+#root .item.active {
+  border: 2px solid #000;
+}
+
+#root .circle-button .item {
+  border-radius: 50%;
+}
+
+#root .square-box .item {
+  border: 2px solid #000000;
+}
+
+#root .item.gradient_rainbow {
+  background: linear-gradient(to right bottom, rgb(237, 28, 36), rgb(247, 141, 30), rgb(255, 223, 0), rgb(2, 173, 92), rgb(6, 101, 200), rgb(129, 65, 156));
+}
+
+#root .item.white {
+  background-color: rgb(255, 255, 255);
+}
+
+#root .item.green {
+  background-color: rgb(54, 181, 66);
+}
+
+#root .item.red {
+  background-color: rgb(185, 4, 4);
+}
+
+#root .item.orange {
+  background-color: rgb(255, 85, 1);
+}
+
+#root .item.yellow {
+  background-color: rgb(255, 223, 0);
+}
+
+#root .item.blue {
+  background-color: rgb(103, 206, 240);
+}
+
+#root .item.pink {
+  background-color: rgb(255, 67, 165);
+}
+
+#root .item.light-pink {
+  background-color: rgb(255, 142, 201);
+}
+
+#root span.spanstyle {
+  margin-right: 30px;
+}
+
+@font-face {
+  font-family: 'Synthemesc';
+}
+
+#root {
+  width: 100%;
+  margin: 0;
+  max-width: 100%;
+}
+
+#root .left-container {
+  width: 60%;
+  display: inline-block;
+}
+
+#root .right-container {
+  width: 40%;
+  display: inline-block;
+  vertical-align: top;
+}
+
+#root .right-container h1 {
+  margin: 0 0 25px;
+  text-align: left;
+  font-size: 27px;
+}
+
+#root .selector-container span.spanstyle {
+  display: block;
+  margin: 0 0 3px;
+  text-align: left;
+  font-size: 15px;
+}
+
+#root .selector-container ul {
+  margin: 0;
+}
+
+#root .input-container {
+  width: 100%;
+  position: relative;
+}
+
+#root .inputbox {
+  width: 97%;
+  height: 44px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 0px 10px;
+}
+
+#root .character-count {
+  position: absolute;
+  right: 10px;
+  top: 13px;
+  font-size: 13px;
+  color: #999;
+}
+
+#root span.spanstyle {
+  display: block;
+  margin: 0 0 3px;
+  text-align: left;
+  font-size: 15px;
+}
+
+#root .layout-container ul {
+  margin: 0;
+}
+
+#root .selector-container {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+#root .layout-container {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+#root .right-container button.complete {
+  float: right;
+  background: #000;
+  color: #fff;
+  border-radius: 30px;
+  padding: 15px 25px;
+  margin-top: 50px;
+}
+
+#root .square-box .item:hover {
+  border: 2px solid #F15B41;
+}
+
+#root .circle-button .item:hover {
+  border: 2px solid #F15B41;
+}
+
+#root .right-container .custom-header {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+}
+
+#root .right-container .cross-icon {
+  margin-right: 10px;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+}
+#root .complete {
+  margin-top: 20px;
+}
+
+#root #screenshot {
+  margin-top: 20px;
+  border: 1px solid black;
+}
+/* font 6 */
+@font-face {
+  font-family: 'Y2k Fill';
+  src: url('https://caseus.s3.ap-south-1.amazonaws.com/font/Y2k-Fill.woff2') format('woff2'),
+    url('https://caseus.s3.ap-south-1.amazonaws.com/font/Y2k-Fill.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* font 5 */
+@font-face {
+  font-family: 'Hyogo';
+  src: url('https://caseus.s3.ap-south-1.amazonaws.com/font/Hyogo-regular.woff2') format('woff2'),
+    url('https://caseus.s3.ap-south-1.amazonaws.com/font/Hyogo-regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* font 4 */
+@font-face {
+  font-family: 'Quentin';
+  src: url('https://caseus.s3.ap-south-1.amazonaws.com/font/Quentin.woff2') format('woff2'),
+    url('https://caseus.s3.ap-south-1.amazonaws.com/font/Quentin.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* font 3 */
+@font-face {
+  font-family: 'Guyon Gazebo';
+  src: url('https://caseus.s3.ap-south-1.amazonaws.com/font/GuyonGazebo-Regular.woff2') format('woff2'),
+    url('https://caseus.s3.ap-south-1.amazonaws.com/font/GuyonGazebo-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* font 2 */
+@font-face {
+  font-family: 'Buenos Aires';
+  src: url('https://caseus.s3.ap-south-1.amazonaws.com/font/BuenosAires-Bold.eot');
+  src: url('https://caseus.s3.ap-south-1.amazonaws.com/font/BuenosAires-Bold.woff2') format('woff2'),
+    url('https://caseus.s3.ap-south-1.amazonaws.com/font/BuenosAires-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* font 1 */
+@font-face {
+  font-family: 'Peace Sans';
+  src: url('https://caseus.s3.ap-south-1.amazonaws.com/font/PeaceSans.woff2') format('woff2'),
+    url('https://caseus.s3.ap-south-1.amazonaws.com/font/PeaceSans.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+div#myCanvas canvas {
+  width: 650px;
+  margin: auto;
+  display: block;
+}
+.right-container h1.custom-header{display: block!important;}
+.right-container h1.custom-header img{float: right;}
