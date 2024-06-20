@@ -5,28 +5,40 @@ import html2canvas from 'html2canvas';
 
 function App() {
   const [inputValue, setInputValue] = useState('');
+
   const [fontItems, setFontItems] = useState([]);
+
   const [baseImg, setBaseImg] = useState('');
+
   const [maskImg, setMaskImg] = useState('');
 
-  const [imageItems2, setImageItems2] = useState([]);
   const [font, setFont] = useState('Peace Sans');
+
+  const [layoutItems, setLayoutItems] = useState([]);
+
   const [layout, setLayout] = useState('layout1');
+
   const [colortext, setColorText] = useState('white');
+
   const [styles, setStyles] = useState([]);
+
   const [selectedStyle, setSelectedStyle] = useState('Simple');
 
   const [designs, setDesigns] = useState([]);
-  const [selectedDesignColor, setSelectedDesignColor] = useState(null);
 
   const [colors, setColors] = useState([]);
+
   const [uLineColor, setULineColor] = useState([]);
+
   const [boxDesignColor, setBoxDesignColor] = useState(null);
+
   const [dotDesignColor, setDotDesignColor] = useState('white');
+
   const [thumnailDesign, setThumnailDesign] = useState('https://caseus.s3.ap-south-1.amazonaws.com/Teddy.svg');
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   }
+
 
   useEffect(() => {
     const styleItems = [
@@ -90,14 +102,14 @@ function App() {
     ];
     setFontItems(fontItems);
 
-    const imageItems2 = [
+    const layoutItems = [
       { id: "layout1", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/9c4c82cc261cf174d9d201373a1d02e4.svg" },
       { id: "layout2", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/ac417f35ab911f8462a6e5a438b4d7a7.svg" },
       { id: "layout3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/228dc318b4d260bf0ec1d950ce9c8beb.svg" },
       { id: "layout4", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/4adc012cc49894d833c9b202dcf291b0.svg" },
       { id: "layout5", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/4ca09b8117dea1765e1e84f867c36dec.svg" }
     ];
-    setImageItems2(imageItems2);
+    setLayoutItems(layoutItems);
 
     const colorItems = [
       { id: "white", className: "white" },
@@ -110,12 +122,13 @@ function App() {
       { id: "magenta", className: "magenta" }
     ];
     setColors(colorItems);
+
   }, []);
 
   useEffect(() => {
-    const product_id = document.querySelector('input[name="product-id"]').value;
+    // const product_id = document.querySelector('input[name="product-id"]').value;
     // // console.log('Product ID:', product_id); // Debugging log
-    // const product_id = 8230530842822
+    const product_id = 8230530842822
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/product/data`, {
@@ -145,6 +158,7 @@ function App() {
     } else if (item.id == 'Thumnail') {
       setThumnailDesign(designs[item.id][0]['imageUrl']);
     }
+
   }
 
   const handleStyleDesignChange = (item) => {
@@ -159,6 +173,7 @@ function App() {
     if (selectedStyle == 'Thumnail') {
       setThumnailDesign(item['imageUrl']);
     }
+
   }
 
   const appRef = useRef(null);
@@ -168,9 +183,31 @@ function App() {
     appRef.current = extractImage;
   };
 
+  
   const handleCompleteClick = () => {
     if (appRef.current) {
       appRef.current();
+    }
+    var customizationValue = localStorage.getItem('text');
+  
+    if (customizationValue) {
+      document.getElementById('customization').value = customizationValue;
+    }
+
+  
+    var base64 = localStorage.getItem('base64Image');
+  
+    // Check if base64 is not null or empty
+    if (base64) {
+      var imgElement = document.querySelector('#product-base-img img');
+      if (imgElement) {
+        imgElement.src = base64;
+        imgElement.removeAttribute('srcset');
+      } else {
+        console.log('Image element not found.');
+      }
+    } else {
+      console.log('No base64 image found in localStorage.');
     }
   };
 
@@ -178,7 +215,7 @@ function App() {
     <>
       <div className='main'>
         <div className="left-container">
-          <Pixi selectedStyle={selectedStyle} uLineColor={uLineColor} boxDesignColor={boxDesignColor} dotDesignColor={dotDesignColor} thumnailDesign={thumnailDesign} inputValue={inputValue} colortext={colortext} font={font} baseImg={baseImg} maskImg={maskImg} onExtractImage={handleExtractImage} />
+          <Pixi selectedStyle={selectedStyle} uLineColor={uLineColor} boxDesignColor={boxDesignColor} dotDesignColor={dotDesignColor} thumnailDesign={thumnailDesign} inputValue={inputValue} colortext={colortext} font={font} baseImg={baseImg} maskImg={maskImg} onExtractImage={handleExtractImage} layout={layout} />
 
           <div id="myCanvas"></div>
         </div>
@@ -190,6 +227,7 @@ function App() {
               src="https://cdn-icons-png.flaticon.com/512/2734/2734822.png"
               alt="Close"
               className="cross-icon"
+              onClick={handleCompleteClick}
             />
           </h1>
 
@@ -271,7 +309,7 @@ function App() {
             <span className="spanstyle">Layout</span>
             <ul className="text-center text-md-left square-box layout">
 
-              {imageItems2.map((item, index) => (
+              {layoutItems.map((item, index) => (
                 <li
                   key={item.id}
                   id={item.id}

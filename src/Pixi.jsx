@@ -1,17 +1,31 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as PIXI from 'pixi.js';
 import designs from './designs.js';
 
-const Pixi = ({ selectedStyle, uLineColor, boxDesignColor, dotDesignColor, thumnailDesign, inputValue, colortext, font, baseImg, maskImg, onExtractImage }) => {
+const Pixi = ({
+  selectedStyle,
+  uLineColor,
+  boxDesignColor,
+  dotDesignColor,
+  thumnailDesign,
+  inputValue,
+  colortext,
+  font,
+  baseImg,
+  maskImg,
+  onExtractImage,
+}) => {
   const appRef = useRef(null);
   const maskImageRef = useRef(null);
   const thumnailImageRef = useRef(null);
 
+  // State to store base64 image data
+  const [base64Image, setBase64Image] = useState('');
+
   useEffect(() => {
     if (baseImg && maskImg) {
-      console.log('Initializing PIXI application'); // Debugging log
+      console.log('Initializing PIXI application');
 
-      // Initialize PIXI application
       const app = new PIXI.Application({
         backgroundColor: 0xffffff,
         resolution: 2,
@@ -20,7 +34,7 @@ const Pixi = ({ selectedStyle, uLineColor, boxDesignColor, dotDesignColor, thumn
       });
 
       document.body.querySelector('#myCanvas').appendChild(app.view);
-      appRef.current = app;
+      appRef.current = app; // Store the PIXI Application instance
 
       const loader = new PIXI.Loader();
       loader.add('base', baseImg);
@@ -61,6 +75,7 @@ const Pixi = ({ selectedStyle, uLineColor, boxDesignColor, dotDesignColor, thumn
       });
 
       return () => {
+        // Cleanup: Destroy PIXI Application instance
         app.destroy(true, { children: true, texture: true, baseTexture: true });
       };
     }
@@ -68,12 +83,23 @@ const Pixi = ({ selectedStyle, uLineColor, boxDesignColor, dotDesignColor, thumn
 
   useEffect(() => {
     if (appRef.current && maskImageRef.current) {
+      // Update design when dependent props change
       updateDesign();
     }
-  }, [selectedStyle, uLineColor, boxDesignColor, dotDesignColor, inputValue, colortext, font, maskImg]);
+  }, [
+    selectedStyle,
+    uLineColor,
+    boxDesignColor,
+    dotDesignColor,
+    inputValue,
+    colortext,
+    font,
+    maskImg,
+  ]);
 
   useEffect(() => {
     if (onExtractImage) {
+      // Handle extract image action
       onExtractImage(extractImage);
     }
   }, [onExtractImage]);
@@ -83,30 +109,38 @@ const Pixi = ({ selectedStyle, uLineColor, boxDesignColor, dotDesignColor, thumn
     const maskImage = maskImageRef.current;
     const thumnailImage = thumnailImageRef.current;
 
-    var designString = designs[selectedStyle];
+    let designString = designs[selectedStyle];
+
+    const baseFontSize = 130;
+    const scalingFactor = 14;
+    const maxLength = 8;
+
+    let value = inputValue.slice(0, maxLength).toUpperCase();
+    localStorage.setItem('text', value);
     let textStyleConfig = {
       dropShadowAngle: 10,
-      dropShadowColor: "#cdc137",
-      fontSize: 40,
+      dropShadowColor: '#cdc137',
+      fontSize: baseFontSize - value.length * scalingFactor,
       fontWeight: 600,
       fill: `${colortext}`,
-      fontFamily: `${font}`
+      fontFamily: `${font}`,
+      breakWords: true,
     };
 
-    if (selectedStyle === "Box") {
-      designString = designString.replaceAll("%BOX_COLOR%", boxDesignColor);
+    if (selectedStyle === 'Box') {
+      designString = designString.replaceAll('%BOX_COLOR%', boxDesignColor);
     }
-    if (selectedStyle === "Dot") {
-      designString = designString.replaceAll("%DOT_COLOR%", dotDesignColor);
+    if (selectedStyle === 'Dot') {
+      designString = designString.replaceAll('%DOT_COLOR%', dotDesignColor);
     }
-    if (selectedStyle === "Stroke") {
+    if (selectedStyle === 'Stroke') {
       uLineColor = uLineColor;
     }
-    if (selectedStyle === "Gradient") {
+    if (selectedStyle === 'Gradient') {
       textStyleConfig.fill = '#ffffff';
     }
-    if (selectedStyle === "Thumnail") {
-      textStyleConfig.fontFamily = 'Y2k Fill'
+    if (selectedStyle === 'Thumnail') {
+      textStyleConfig.fontFamily = 'Y2k Fill';
       textStyleConfig.fontSize = 20;
     }
 
@@ -117,12 +151,10 @@ const Pixi = ({ selectedStyle, uLineColor, boxDesignColor, dotDesignColor, thumn
 
     maskImage.filters = [filter];
 
-    let value = inputValue.slice(0, 8).toUpperCase();
-
     if (font === 'Peace Sans') {
-      textStyleConfig.stroke = "#050505";
+      textStyleConfig.stroke = '#050505';
       textStyleConfig.strokeThickness = 5;
-      value = inputValue.slice(0, 8).toLowerCase();
+      value = inputValue.slice(0, maxLength).toLowerCase();
     }
 
     if (font === 'Y2k Fill') {
@@ -131,18 +163,24 @@ const Pixi = ({ selectedStyle, uLineColor, boxDesignColor, dotDesignColor, thumn
 
     const style = new PIXI.TextStyle(textStyleConfig);
     const text = new PIXI.Text(value, style);
-    text.x = app.screen.width / 2 - 100;
-    text.y = app.screen.height / 2 - 10;
 
-    // Clear previous text objects from the stage
+    const textArea = {
+      x: app.screen.width / 2 - 100,
+      y: app.screen.height / 2 - 20,
+      width: 200,
+      height: 40,
+    };
+
+    text.x = textArea.x + (textArea.width - text.width) / 2;
+    text.y = textArea.y + (textArea.height - text.height) / 2;
+
     const childrenToRemove = app.stage.children.filter(child => child instanceof PIXI.Text);
     childrenToRemove.forEach(child => app.stage.removeChild(child));
 
     app.stage.addChild(maskImage);
     app.stage.addChild(text);
 
-    // Conditionally add the thumnail image
-    if (selectedStyle === "Thumnail" && thumnailImage) {
+    if (selectedStyle === 'Thumnail' && thumnailImage) {
       app.stage.addChild(thumnailImage);
     } else if (thumnailImage) {
       app.stage.removeChild(thumnailImage);
@@ -152,17 +190,33 @@ const Pixi = ({ selectedStyle, uLineColor, boxDesignColor, dotDesignColor, thumn
   const extractImage = () => {
     const app = appRef.current;
     if (app) {
+      // Extract the base64 image data from the PIXI stage
       const image = app.renderer.plugins.extract.base64(app.stage);
+      console.log('image', image);
+
+      // Set the base64 image data into the state
+      setBase64Image(image);
+
+      // Store the base64 image data in localStorage
+      localStorage.setItem('base64Image', image);
+
+      // Create a link element for downloading the image
       const link = document.createElement('a');
       link.href = image;
-      link.download = 'design.png';
+      // link.download = 'design.png';
+
+      // Append the link to the document body, trigger a click, and remove the link
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
   };
 
-  return <div id="myCanvas" ></div>;
+  return (
+    <div>
+      <div id="myCanvas"></div>
+    </div>
+  );
 };
 
 export default Pixi;
