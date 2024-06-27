@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import styles from './styles.module.css'; // CSS module
 
 const redirectToShopifyAuth = (e, shop) => {
-    console.log("je;dasfdafdasf")
     if (shop?.length) {
-        const authUrl = `http://localhost:3000/platforms/Shopify/auth?shop=${shop}`;
+        const authUrl = `http://13.232.134.145:8006/platforms/Shopify/auth?shop=${shop}`;
         window.location.href = authUrl;
     }
     return;
@@ -22,7 +21,7 @@ const Login = () => {
         console.log("code ", code)
         console.log("shop ", shop)
         if (code && shop) {
-            fetch(`http://localhost:/platforms/Shopify/code`, {
+            fetch(`http://13.232.134.145:8006/platforms/Shopify/code`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

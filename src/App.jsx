@@ -131,7 +131,7 @@ function App() {
     const product_id = 8230530842822
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/product/data`, {
+        const response = await axios.get(`http://13.232.134.145:8006/product/data`, {
           params: { id: product_id }
         });
         const data = response.data.data;
@@ -195,20 +195,20 @@ function App() {
     }
 
   
-    var base64 = localStorage.getItem('base64Image');
-  
-    // Check if base64 is not null or empty
-    if (base64) {
-      var imgElement = document.querySelector('#product-base-img img');
-      if (imgElement) {
-        imgElement.src = base64;
-        imgElement.removeAttribute('srcset');
+    setTimeout(() => {
+      var base64 = localStorage.getItem('base64');
+      if (base64) {
+          var imgElement = document.querySelector('#product-base-img img');
+          if (imgElement) {
+              imgElement.src = base64;
+              imgElement.removeAttribute('srcset');
+          } else {
+              console.log('Image element not found.');
+          }
       } else {
-        console.log('Image element not found.');
+          console.log('No base64 image found in localStorage.');
       }
-    } else {
-      console.log('No base64 image found in localStorage.');
-    }
+  }, 2000); // Adjust the timeout value (in milliseconds) as needed
   };
 
   return (

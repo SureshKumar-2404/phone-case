@@ -187,30 +187,53 @@ const Pixi = ({
     }
   };
 
-  const extractImage = () => {
+const extractImage = () => {
     const app = appRef.current;
     if (app) {
-      // Extract the base64 image data from the PIXI stage
-      const image = app.renderer.plugins.extract.base64(app.stage);
-      console.log('image', image);
+        // Extract the base64 image data from the PIXI stage
+        const image = app.renderer.plugins.extract.base64(app.stage);
+        localStorage.setItem('base64', image);
+        console.log('image', image);
 
-      // Set the base64 image data into the state
-      setBase64Image(image);
+        // Convert base64 to a blob
+        const byteString = atob(image.split(',')[1]);
+        const mimeString = image.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        const blob = new Blob([ab], { type: mimeString });
 
-      // Store the base64 image data in localStorage
-      localStorage.setItem('base64Image', image);
+        // Create a file from the blob
+        const file = new File([blob], 'design.png', { type: mimeString });
 
-      // Create a link element for downloading the image
-      const link = document.createElement('a');
-      link.href = image;
-      // link.download = 'design.png';
+        // Create a FormData object
+        const formData = new FormData();
+        formData.append('variant_img', file);
+        formData.append('product_id','8230530842822'); // Add product_id if required
 
-      // Append the link to the document body, trigger a click, and remove the link
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+        // Send the formData to the server
+        fetch('http://13.232.134.145:8006/product/variant/img', {
+            method: 'POST',
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    // Store the variant_img URL in localStorage
+                    localStorage.setItem('variant_img', data.data.variant_img);
+                    console.log('variant_img URL stored in localStorage:', data.data.variant_img);
+                } else {
+                    console.error('Failed to upload image:', data);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
-  };
+};
+
 
   return (
     <div>
