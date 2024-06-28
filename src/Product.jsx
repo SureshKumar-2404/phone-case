@@ -15,7 +15,7 @@ const Product = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://13.232.134.145:8006/products');
+                const response = await axios.get('https://caseusshopify.enactstage.com/caseusapi/products');
                 const productsData = response.data;
                 setProducts(productsData);
                 setFilteredProducts(productsData);

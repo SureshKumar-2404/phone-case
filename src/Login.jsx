@@ -3,7 +3,7 @@ import styles from './styles.module.css'; // CSS module
 
 const redirectToShopifyAuth = (e, shop) => {
     if (shop?.length) {
-        const authUrl = `http://13.232.134.145:8006/platforms/Shopify/auth?shop=${shop}`;
+        const authUrl = `https://caseusshopify.enactstage.com/caseusapi/platforms/Shopify/auth?shop=${shop}`;
         window.location.href = authUrl;
     }
     return;
@@ -21,7 +21,7 @@ const Login = () => {
         console.log("code ", code)
         console.log("shop ", shop)
         if (code && shop) {
-            fetch(`http://13.232.134.145:8006/platforms/Shopify/code`, {
+            fetch(`https://caseusshopify.enactstage.com/caseusapi/platforms/Shopify/code`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

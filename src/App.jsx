@@ -1,5 +1,5 @@
 import Pixi from './Pixi.jsx';
-import { useState, useEffect ,useRef} from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
 
@@ -18,7 +18,7 @@ function App() {
 
   const [layout, setLayout] = useState('layout1');
 
-  const [colortext, setColorText] = useState('white');
+  const [colortext, setColorText] = useState('ffffff');
 
   const [styles, setStyles] = useState([]);
 
@@ -27,18 +27,17 @@ function App() {
   const [designs, setDesigns] = useState([]);
 
   const [colors, setColors] = useState([]);
-
   const [uLineColor, setULineColor] = useState([]);
 
   const [boxDesignColor, setBoxDesignColor] = useState(null);
 
+  const [dotDesignColorId, setDotDesignColorId] = useState('Black');
   const [dotDesignColor, setDotDesignColor] = useState('white');
 
   const [thumnailDesign, setThumnailDesign] = useState('https://caseus.s3.ap-south-1.amazonaws.com/Teddy.svg');
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   }
-
 
   useEffect(() => {
     const styleItems = [
@@ -61,6 +60,7 @@ function App() {
         { id: "Red", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Red.svg', color: '0.698, 0.055, 0.047' },
         { id: "White", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/White.svg', color: '1.0, 1.0, 1.0' },
         { id: "Yellow", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Yellow.svg', color: '0.973, 0.831, 0.255' },
+        { id: "Raspberry-pink", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Raspberry-pink.svg', color: '0.925, 0.274, 0.647' }
       ],
       'Dot': [
         { id: "Black", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Dots/Black.svg', dotColor: '0.0, 0.0, 0.0, 1.0' },
@@ -74,8 +74,9 @@ function App() {
         { id: "Orange", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Stroke/Orange.svg', uLineColor: [0.945, 0.337, 0.094, 1.0] },
         { id: "White", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Stroke/White.svg', uLineColor: [1.0, 1.0, 1.0, 1.0] },
         { id: "Yellow", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Stroke/Yellow.svg', uLineColor: [0.973, 0.831, 0.255, 1.0] },
-        // { id: "Orange", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Stroke/Orange.svg', uLineColor: [0.0, 0.0, 1.0, 1.0] },
-        // { id: "PinkGradient", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Stroke/PinkGradient.svg', uLineColor: [0.0, 0.0, 1.0, 1.0] },
+        { id: "Thunderbird", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Stroke/Thunderbird.svg', uLineColor: [0.752, 0.168, 0.094, 1.0] },
+        { id: "Raspberry_pink", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Stroke/Rasbperry_Stroke.svg', uLineColor: [0.925, 0.274, 0.647, 1.0] },
+        { id: "Light_orchid", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Stroke/Light_Orchid_Stroke.svg', uLineColor: [0.886, 0.611, 0.823, 1.0] },
       ],
       'Gradient': [
         { id: "OrangeGradient", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Stroke/Gradient/OrangeGradient.svg' },
@@ -102,36 +103,102 @@ function App() {
     ];
     setFontItems(fontItems);
 
-    const layoutItems = [
-      { id: "layout1", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/9c4c82cc261cf174d9d201373a1d02e4.svg" },
-      { id: "layout2", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/ac417f35ab911f8462a6e5a438b4d7a7.svg" },
-      { id: "layout3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/228dc318b4d260bf0ec1d950ce9c8beb.svg" },
-      { id: "layout4", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/4adc012cc49894d833c9b202dcf291b0.svg" },
-      { id: "layout5", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/4ca09b8117dea1765e1e84f867c36dec.svg" }
-    ];
+    const layoutItems = {
+      'Simple': [
+        { id: "layout1", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/9c4c82cc261cf174d9d201373a1d02e4.svg" },
+        { id: "layout2", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/ac417f35ab911f8462a6e5a438b4d7a7.svg" },
+        { id: "layout3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/228dc318b4d260bf0ec1d950ce9c8beb.svg" },
+        { id: "layout4", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/4adc012cc49894d833c9b202dcf291b0.svg" },
+      ],
+      'Box': [
+        { id: "layout1", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/9c4c82cc261cf174d9d201373a1d02e4.svg" },
+        { id: "layout2", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/ac417f35ab911f8462a6e5a438b4d7a7.svg" },
+        { id: "layout4", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/4adc012cc49894d833c9b202dcf291b0.svg" },
+      ],
+      'Dot': [
+        { id: "layout1", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/9c4c82cc261cf174d9d201373a1d02e4.svg" },
+        { id: "layout2", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/ac417f35ab911f8462a6e5a438b4d7a7.svg" },
+        { id: "layout4", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/4adc012cc49894d833c9b202dcf291b0.svg" },
+      ],
+      'Stroke': [
+        { id: "layout2", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/ac417f35ab911f8462a6e5a438b4d7a7.svg" },
+        { id: "layout4", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/4adc012cc49894d833c9b202dcf291b0.svg" },
+      ],
+      'Gradient': [
+        { id: "layout1", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/9c4c82cc261cf174d9d201373a1d02e4.svg" },
+        { id: "layout2", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/ac417f35ab911f8462a6e5a438b4d7a7.svg" },
+        { id: "layout3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/228dc318b4d260bf0ec1d950ce9c8beb.svg" },
+        { id: "layout4", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/4adc012cc49894d833c9b202dcf291b0.svg" },
+      ],
+      'Thumnail': [
+        { id: "layout2", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/ac417f35ab911f8462a6e5a438b4d7a7.svg" },
+      ]
+    };
     setLayoutItems(layoutItems);
 
-    const colorItems = [
-      { id: "white", className: "white" },
-      { id: "green", className: "green" },
-      { id: "red", className: "red" },
-      { id: "orange", className: "orange" },
-      { id: "yellow", className: "yellow" },
-      { id: "aqua", className: "blue" },
-      { id: "pink", className: "pink" },
-      { id: "magenta", className: "magenta" }
-    ];
+    const colorItems = {
+      'Simple': [
+        { id: "ffffff", className: "ffffff" },
+        { id: "54b643", className: "#54b643" },
+        { id: "ba2a25", className: "#ba2a25" },
+        { id: "ee5335", className: "#ee5335" },
+        { id: "fde04c", className: "#fde04c" },
+        { id: "67cef0", className: "#67cef0" },
+        { id: "ec46a4", className: "#ec46a4" },
+        { id: "f08dc8", className: "#f08dc8" }
+      ],
+      'Box': [
+        { id: "ffffff", className: "ffffff" },
+        { id: "54b643", className: "#54b643" },
+        { id: "ba2a25", className: "#ba2a25" },
+        { id: "ee5335", className: "#ee5335" },
+        { id: "fde04c", className: "#fde04c" },
+        { id: "67cef0", className: "#67cef0" },
+        { id: "ec46a4", className: "#ec46a4" },
+        { id: "f08dc8", className: "#f08dc8" }
+      ],
+      'Dot': [
+        { id: "ffffff", className: "ffffff" },
+        { id: "54b643", className: "#54b643" },
+        { id: "ba2a25", className: "#ba2a25" },
+        { id: "ee5335", className: "#ee5335" },
+        { id: "fde04c", className: "#fde04c" },
+        { id: "67cef0", className: "#67cef0" },
+        { id: "ec46a4", className: "#ec46a4" },
+        { id: "f08dc8", className: "#f08dc8" }
+      ],
+      'Stroke': [
+        { id: "ffffff", className: "ffffff" },
+        { id: "54b643", className: "#54b643" },
+        { id: "ba2a25", className: "#ba2a25" },
+        { id: "ee5335", className: "#ee5335" },
+        { id: "fde04c", className: "#fde04c" },
+        { id: "67cef0", className: "#67cef0" },
+        { id: "ec46a4", className: "#ec46a4" },
+        { id: "f08dc8", className: "#f08dc8" }
+      ],
+      'Gradient': [
+        { id: "ffffff", className: "ffffff" },
+      ],
+      'Thumnail': [
+        { id: "c476dd", className: "#c476dd" },
+        { id: "54b643", className: "#54b643" },
+        { id: "67cef0", className: "#67cef0" },
+        { id: "ec46a4", className: "#ec46a4" },
+        { id: "f08dc8", className: "#f08dc8" }
+      ]
+    };
     setColors(colorItems);
 
   }, []);
 
   useEffect(() => {
-    // const product_id = document.querySelector('input[name="product-id"]').value;
+    // const product_id = document.querySelector('input[name="product-id"]') ? document.querySelector('input[name="product-id"]').value : null;
     // // console.log('Product ID:', product_id); // Debugging log
     const product_id = 8230530842822
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://13.232.134.145:8006/product/data`, {
+        const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapi/product/data`, {
           params: { id: product_id }
         });
         const data = response.data.data;
@@ -154,6 +221,7 @@ function App() {
     } else if (item.id == 'Box') {
       setBoxDesignColor(designs[item.id][0]['color']);
     } else if (item.id == 'Dot') {
+      setDotDesignColorId(designs[item.id][0]['id']);
       setDotDesignColor(designs[item.id][0]['dotColor']);
     } else if (item.id == 'Thumnail') {
       setThumnailDesign(designs[item.id][0]['imageUrl']);
@@ -168,6 +236,7 @@ function App() {
       setBoxDesignColor(item['color']);
     }
     else if (selectedStyle == 'Dot') {
+      setDotDesignColorId(item['id']);
       setDotDesignColor(item['dotColor']);
     }
     if (selectedStyle == 'Thumnail') {
@@ -183,39 +252,39 @@ function App() {
     appRef.current = extractImage;
   };
 
-  
+
   const handleCompleteClick = () => {
     if (appRef.current) {
       appRef.current();
     }
     var customizationValue = localStorage.getItem('text');
-  
+
     if (customizationValue) {
       document.getElementById('customization').value = customizationValue;
     }
 
-  
+
     setTimeout(() => {
       var base64 = localStorage.getItem('base64');
       if (base64) {
-          var imgElement = document.querySelector('#product-base-img img');
-          if (imgElement) {
-              imgElement.src = base64;
-              imgElement.removeAttribute('srcset');
-          } else {
-              console.log('Image element not found.');
-          }
+        var imgElement = document.querySelector('#product-base-img img');
+        if (imgElement) {
+          imgElement.src = base64;
+          imgElement.removeAttribute('srcset');
+        } else {
+          console.log('Image element not found.');
+        }
       } else {
-          console.log('No base64 image found in localStorage.');
+        console.log('No base64 image found in localStorage.');
       }
-  }, 2000); // Adjust the timeout value (in milliseconds) as needed
+    }, 2000); // Adjust the timeout value (in milliseconds) as needed
   };
 
   return (
     <>
       <div className='main'>
         <div className="left-container">
-          <Pixi selectedStyle={selectedStyle} uLineColor={uLineColor} boxDesignColor={boxDesignColor} dotDesignColor={dotDesignColor} thumnailDesign={thumnailDesign} inputValue={inputValue} colortext={colortext} font={font} baseImg={baseImg} maskImg={maskImg} onExtractImage={handleExtractImage} layout={layout} />
+          <Pixi selectedStyle={selectedStyle} uLineColor={uLineColor} boxDesignColor={boxDesignColor} dotDesignColorId={dotDesignColorId} dotDesignColor={dotDesignColor} thumnailDesign={thumnailDesign} inputValue={inputValue} colortext={colortext} font={font} baseImg={baseImg} maskImg={maskImg} onExtractImage={handleExtractImage} layout={layout} />
 
           <div id="myCanvas"></div>
         </div>
@@ -271,7 +340,6 @@ function App() {
                 <span className="spanstyle">Design</span>
                 <ul className="text-center text-md-left dragscroll square-box design">
 
-
                   {(designs[selectedStyle] || []).map((item, index) => (
                     <li
                       key={item.id}
@@ -309,7 +377,7 @@ function App() {
             <span className="spanstyle">Layout</span>
             <ul className="text-center text-md-left square-box layout">
 
-              {layoutItems.map((item, index) => (
+              {(layoutItems[selectedStyle] || []).map((item, index) => (
                 <li
                   key={item.id}
                   id={item.id}
@@ -324,12 +392,12 @@ function App() {
           <div className="color-container">
             <span className="spanstyle ">Color</span>
             <ul className="text-center text-md-left circle-button color">
-
-              {colors.map((item, index) => (
+              {(colors[selectedStyle] || [0]).map((item, index) => (
                 <li
                   key={item.id}
                   id={item.id}
-                  className={`item ${item.className} ${index === 0 ? 'active' : ''}`}
+                  className={`item ${index === 0 ? 'active' : ''}`}
+                  style={{ backgroundColor: item.className }}
                   onClick={() => setColorText(item.id)}
                 ></li>
               ))}

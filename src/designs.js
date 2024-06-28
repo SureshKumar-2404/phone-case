@@ -140,7 +140,7 @@ void main(void) {
 }
 `;
 
-const dotDesign1 = `
+const dotDesign1= `
 precision mediump float;
 
 uniform sampler2D uSampler;
@@ -253,7 +253,12 @@ const designs = {
     'Simple': simpleDesign,
     'Stroke': strokeDesign,
     'Box': boxDesign,
-    'Dot': dotDesign,
+    'Dot': {
+        'White': dotDesign,
+        'Black': dotDesign,
+        'OrangeGradient': dotDesign1,
+        'PinkGradient': dotDesign1,
+    },
     'Gradient': gradientDesign,
     'Thumnail': simpleDesign
 };

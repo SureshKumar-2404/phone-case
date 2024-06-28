@@ -14,6 +14,8 @@ const Pixi = ({
   baseImg,
   maskImg,
   onExtractImage,
+  layout,
+  dotDesignColorId
 }) => {
   const appRef = useRef(null);
   const maskImageRef = useRef(null);
@@ -80,7 +82,6 @@ const Pixi = ({
       };
     }
   }, [baseImg, maskImg, thumnailDesign]);
-
   useEffect(() => {
     if (appRef.current && maskImageRef.current) {
       // Update design when dependent props change
@@ -95,6 +96,8 @@ const Pixi = ({
     colortext,
     font,
     maskImg,
+    layout,
+    dotDesignColorId
   ]);
 
   useEffect(() => {
@@ -108,8 +111,13 @@ const Pixi = ({
     const app = appRef.current;
     const maskImage = maskImageRef.current;
     const thumnailImage = thumnailImageRef.current;
+    let designString;
 
-    let designString = designs[selectedStyle];
+    if (selectedStyle == 'Dot') {
+      designString = designs[selectedStyle][dotDesignColorId];
+    } else {
+      designString = designs[selectedStyle];
+    }
 
     const baseFontSize = 130;
     const scalingFactor = 14;
@@ -122,9 +130,9 @@ const Pixi = ({
       dropShadowColor: '#cdc137',
       fontSize: baseFontSize - value.length * scalingFactor,
       fontWeight: 600,
-      fill: `${colortext}`,
+      fill: `#${colortext}`,
       fontFamily: `${font}`,
-      breakWords: true,
+      breakWords: true
     };
 
     if (selectedStyle === 'Box') {
@@ -179,6 +187,7 @@ const Pixi = ({
 
     app.stage.addChild(maskImage);
     app.stage.addChild(text);
+    
 
     if (selectedStyle === 'Thumnail' && thumnailImage) {
       app.stage.addChild(thumnailImage);
@@ -193,7 +202,7 @@ const extractImage = () => {
         // Extract the base64 image data from the PIXI stage
         const image = app.renderer.plugins.extract.base64(app.stage);
         localStorage.setItem('base64', image);
-        console.log('image', image);
+
 
         // Convert base64 to a blob
         const byteString = atob(image.split(',')[1]);
@@ -214,7 +223,7 @@ const extractImage = () => {
         formData.append('product_id','8230530842822'); // Add product_id if required
 
         // Send the formData to the server
-        fetch('http://13.232.134.145:8006/product/variant/img', {
+        fetch('https://caseusshopify.enactstage.com/caseusapi/product/variant/img', {
             method: 'POST',
             body: formData,
         })
@@ -223,7 +232,6 @@ const extractImage = () => {
                 if (data.success) {
                     // Store the variant_img URL in localStorage
                     localStorage.setItem('variant_img', data.data.variant_img);
-                    console.log('variant_img URL stored in localStorage:', data.data.variant_img);
                 } else {
                     console.error('Failed to upload image:', data);
                 }
