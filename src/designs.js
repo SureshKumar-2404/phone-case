@@ -208,9 +208,9 @@ void main(void) {
 
 const gradientDesign = `
 precision mediump float;
-
-uniform sampler2D uSampler;
+    
 varying vec2 vTextureCoord;
+uniform sampler2D uSampler;
 uniform vec2 uResolution;
 
 void main(void) {
@@ -218,10 +218,10 @@ void main(void) {
 
     if (color.a == 0.0) {
         // Transparent areas, apply gradient
-        vec3 color1 = vec3(0.835, 0.231, 0.231); // hsla(0, 64%, 53%, 1)
-        vec3 color2 = vec3(0.808, 0.816, 0.504); // hsla(47, 92%, 65%, 1)
-        vec3 color3 = vec3(0.59, 0.789, 0.196); // hsla(125, 98%, 50%, 1)
-        vec3 color4 = vec3(0.196, 0.584, 0.922); // hsla(209, 100%, 47%, 1)
+        vec3 color1 = vec3(0.6, 0.812, 0.973); // rgba(153, 207, 248, 1)
+        vec3 color2 = vec3(0.686, 0.451, 0.929); // rgba(175, 115, 237, 1)
+        vec3 color3 = vec3(0.91, 0.341, 0.729); // rgba(232, 87, 186, 1)
+        vec3 color4 = vec3(0.992, 0.451, 0.027); // rgba(253, 115, 7, 1)
 
         float gradientFactor = vTextureCoord.y; // Use y coordinate for vertical gradient
 

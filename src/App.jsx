@@ -33,11 +33,46 @@ function App() {
 
   const [dotDesignColorId, setDotDesignColorId] = useState('Black');
   const [dotDesignColor, setDotDesignColor] = useState('white');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [thumnailDesign, setThumnailDesign] = useState('https://caseus.s3.ap-south-1.amazonaws.com/Teddy.svg');
+
+
   const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-  }
+    let value = event.target.value;
+    const maxLength = layout === 'layout4' ? 3 : 8;
+
+    // Regex to allow only alphabetic characters (both uppercase and lowercase)
+    const regex = /^[A-Za-z]*$/;
+
+    if (regex.test(value)) {
+      if (font === 'Peace Sans') {
+        value = value.toLowerCase();
+        if (value.length <= maxLength) {
+          setInputValue(value);
+          setErrorMessage('');
+        } else {
+          setErrorMessage(`Maximum length of ${maxLength} characters exceeded.`);
+        }
+      } else {
+        value = value.toUpperCase();
+        if (value.length <= maxLength) {
+          setInputValue(value);
+          setErrorMessage('');
+        } else {
+          setErrorMessage(`Maximum length of ${maxLength} characters exceeded.`);
+        }
+      }
+    } else {
+      setErrorMessage('Text contains invalid characters.');
+    }
+  };
+
+  useEffect(() => {
+    if (layout === 'layout4' && inputValue.length > 3) {
+      setInputValue(inputValue.slice(0, 3));
+    }
+  }, [layout, inputValue, font]);
 
   useEffect(() => {
     const styleItems = [
@@ -93,14 +128,52 @@ function App() {
 
     setDesigns(design);
 
-    const fontItems = [
-      { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
-      { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
-      { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
-      { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
-      { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
-      { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-    ];
+    const fontItems = {
+      'Simple': [
+        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+      ],
+      'Box': [
+        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+      ],
+      'Dot': [
+        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+      ],
+      'Stroke': [
+        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+      ],
+      'Gradient': [
+        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+      ],
+      'Thumnail': [
+        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+      ]
+    };
+
     setFontItems(fontItems);
 
     const layoutItems = {
@@ -193,9 +266,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // const product_id = document.querySelector('input[name="product-id"]') ? document.querySelector('input[name="product-id"]').value : null;
+    const product_id = document.querySelector('input[name="product-id"]') ? document.querySelector('input[name="product-id"]').value : null;
     // // console.log('Product ID:', product_id); // Debugging log
-    const product_id = 8230530842822
+    // const product_id = 8230530842822
     const fetchData = async () => {
       try {
         const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapi/product/data`, {
@@ -252,34 +325,31 @@ function App() {
     appRef.current = extractImage;
   };
 
-
   const handleCompleteClick = () => {
     if (appRef.current) {
       appRef.current();
     }
+
     var customizationValue = localStorage.getItem('text');
 
     if (customizationValue) {
       document.getElementById('customization').value = customizationValue;
     }
 
-
-    setTimeout(() => {
-      var base64 = localStorage.getItem('base64');
-      if (base64) {
-        var imgElement = document.querySelector('#product-base-img img');
-        if (imgElement) {
-          imgElement.src = base64;
-          imgElement.removeAttribute('srcset');
-        } else {
-          console.log('Image element not found.');
-        }
+    var base64 = localStorage.getItem('base64');
+    if (base64) {
+      var imgElement = document.querySelector('#product-base-img img');
+      if (imgElement) {
+        imgElement.src = base64;
+        imgElement.removeAttribute('srcset');
       } else {
-        console.log('No base64 image found in localStorage.');
+        console.log('Image element not found.');
       }
-    }, 2000); // Adjust the timeout value (in milliseconds) as needed
+    } else {
+      console.log('No base64 image found in localStorage.');
+    }
   };
-
+  const displayValue = font === 'Peace Sans' ? inputValue.toLowerCase() : inputValue.toUpperCase();
   return (
     <>
       <div className='main'>
@@ -303,19 +373,21 @@ function App() {
           <div className="selector-container">
             <span className="spanstyle">Name</span>
             <ul className="text-center text-md-left dragscroll square-box">
-
               <div className="input-container">
-                <input
-                  className='inputbox'
-                  type="text"
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  placeholder="Enter text"
-                  maxLength={8}
-                />
-                <span className="character-count">
-                  {`(${inputValue.length}/${8})`}
-                </span>
+                <div className="input-container">
+                  <input
+                    className="inputbox"
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    placeholder="Enter text"
+                    maxLength={layout === 'layout4' ? 3 : 8}
+                  />
+                  <span className="character-count">
+                    {`(${displayValue.length}/${layout === 'layout4' ? 3 : 8})`}
+                  </span>
+                </div>
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
               </div>
             </ul>
           </div>
@@ -358,7 +430,7 @@ function App() {
             <span className="spanstyle">Font</span>
             <ul className="text-center text-md-left dragscroll square-box font">
 
-              {fontItems.map((item, index) => (
+                {(fontItems[selectedStyle] || []).map((item, index) => (
                 <li
                   key={item.id}
                   id={item.id}
