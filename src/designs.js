@@ -208,46 +208,41 @@ void main(void) {
 
 const gradientDesign = `
 precision mediump float;
-    
+
 varying vec2 vTextureCoord;
 uniform sampler2D uSampler;
-uniform vec2 uResolution;
 
 void main(void) {
     vec4 color = texture2D(uSampler, vTextureCoord);
 
     if (color.a == 0.0) {
         // Transparent areas, apply gradient
-        vec3 color1 = vec3(0.6, 0.812, 0.973); // rgba(153, 207, 248, 1)
-        vec3 color2 = vec3(0.686, 0.451, 0.929); // rgba(175, 115, 237, 1)
-        vec3 color3 = vec3(0.91, 0.341, 0.729); // rgba(232, 87, 186, 1)
-        vec3 color4 = vec3(0.992, 0.451, 0.027); // rgba(253, 115, 7, 1)
+        vec3 color1 = vec3(%COLOR1%);
+        vec3 color2 = vec3(%COLOR2%);
+        vec3 color3 = vec3(%COLOR3%);
 
         float gradientFactor = vTextureCoord.y; // Use y coordinate for vertical gradient
 
         vec3 gradientColor;
-        if (gradientFactor < 0.10) {
-            gradientColor = color1;
-        } else if (gradientFactor < 0.35) {
-            gradientColor = mix(color1, color2, (gradientFactor - 0.10) / 0.25);
-        } else if (gradientFactor < 0.59) {
-            gradientColor = mix(color2, color3, (gradientFactor - 0.35) / 0.24);
-        } else if (gradientFactor < 0.87) {
-            gradientColor = mix(color3, color4, (gradientFactor - 0.59) / 0.28);
+        if (gradientFactor < 0.333) {
+            gradientColor = mix(color1, color2, gradientFactor / 0.333);
+        } else if (gradientFactor < 0.667) {
+            gradientColor = mix(color2, color3, (gradientFactor - 0.333) / 0.334);
         } else {
-            gradientColor = color4;
+            gradientColor = color3;
         }
 
         gl_FragColor = vec4(gradientColor, 1.0);
-    } else if (color.r == 0.0 && color.g == 0.0 && color.b == 0.0) {
+    } else if (color.rgb == vec3(0.0)) {
         // Change black part to transparent
         gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
     } else {
         // Keep other colors unchanged
-        gl_FragColor = vec4(color.rgb, 1.0);
+        gl_FragColor = color;
     }
 }
-                  `;
+`;
+
 
 const designs = {
     'Simple': simpleDesign,

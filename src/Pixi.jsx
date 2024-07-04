@@ -15,7 +15,8 @@ const Pixi = ({
   maskImg,
   onExtractImage,
   layout,
-  dotDesignColorId
+  dotDesignColorId,
+  gradient
 }) => {
   const appRef = useRef(null);
   const maskImageRef = useRef(null);
@@ -82,6 +83,7 @@ const Pixi = ({
       };
     }
   }, [baseImg, maskImg, thumnailDesign]);
+
   useEffect(() => {
     if (appRef.current && maskImageRef.current) {
       // Update design when dependent props change
@@ -95,6 +97,7 @@ const Pixi = ({
     inputValue,
     colortext,
     font,
+    gradient,
     maskImg,
     layout,
     dotDesignColorId
@@ -107,23 +110,97 @@ const Pixi = ({
     }
   }, [onExtractImage]);
 
+  const gradientColors = {
+    'OrangeGradient': {
+      color1: [1.0, 0.549, 0.0],   // #ff8c00
+      color2: [1.0, 0.412, 0.706], // #ff69b4
+      color3: [0.0, 1.0, 1.0]      // #00ffff
+    },
+    'PinkGradient': {
+      color1: [0.937, 0.510, 0.800], // #ef82cc
+      color2: [0.757, 0.718, 0.784], // #c1b7c8
+      color3: [0.882, 0.824, 0.671]  // #e1d2ab
+    },
+    'RedGradient': {
+      color1: [0.620, 0.905, 0.980], // #9ee7fa
+      color2: [0.831, 0.820, 0.694], // #d4d1b1
+      color3: [0.933, 0.349, 0.208]  // #ee5935
+    },
+    'TriGradient': {
+      color1: [1.0, 0.0, 0.0],      // #ff0000
+      color2: [0.0, 1.0, 0.0],      // #00ff00
+      color3: [0.0, 0.0, 1.0]       // #0000ff
+    }
+  };
+  
+
+  const gradientDesignTemplate = `
+  precision mediump float;
+
+  varying vec2 vTextureCoord;
+  uniform sampler2D uSampler;
+
+  void main(void) {
+      vec4 color = texture2D(uSampler, vTextureCoord);
+
+      if (color.a == 0.0) {
+          // Transparent areas, apply gradient
+          vec3 color1 = vec3(%COLOR1%);
+          vec3 color2 = vec3(%COLOR2%);
+          vec3 color3 = vec3(%COLOR3%);
+
+          float gradientFactor = vTextureCoord.y; // Use y coordinate for vertical gradient
+
+          vec3 gradientColor;
+          if (gradientFactor < 0.333) {
+              gradientColor = mix(color1, color2, gradientFactor / 0.333);
+          } else if (gradientFactor < 0.667) {
+              gradientColor = mix(color2, color3, (gradientFactor - 0.333) / 0.334);
+          } else {
+              gradientColor = color3;
+          }
+
+          gl_FragColor = vec4(gradientColor, 1.0);
+      } else if (color.rgb == vec3(0.0)) {
+          // Change black part to transparent
+          gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+      } else {
+          // Keep other colors unchanged
+          gl_FragColor = color;
+      }
+  }
+  `;
+
+  function generateGradientDesign(gradient) {
+    if (gradient in gradientColors) {
+      const colors = gradientColors[gradient];
+      let gradientDesign = gradientDesignTemplate;
+      gradientDesign = gradientDesign.replace('%COLOR1%', colors.color1.join(', '));
+      gradientDesign = gradientDesign.replace('%COLOR2%', colors.color2.join(', '));
+      gradientDesign = gradientDesign.replace('%COLOR3%', colors.color3.join(', '));
+      return gradientDesign;
+    }
+    return gradientDesignTemplate; // Default design
+  }
+
   const updateDesign = () => {
     const app = appRef.current;
     const maskImage = maskImageRef.current;
     const thumnailImage = thumnailImageRef.current;
     let designString;
 
-    if (selectedStyle == 'Dot') {
+    if (selectedStyle === 'Dot') {
       designString = designs[selectedStyle][dotDesignColorId];
     } else {
       designString = designs[selectedStyle];
     }
+
     // Setup your container dimensions for each layout
     const layoutDimensions = {
-      layout1: { width: 60, height: 30 },
+      layout1: { width: 100, height: 80 },
       layout2: { width: 40, height: 30 },
-      layout3: { width: 180, height: 100 },
-      layout4: { width: 90, height: 90 },
+      layout3: { width: 150, height: 150 },
+      layout4: { width: 100, height: 80 },
     };
 
     const baseFontSize = 160;
@@ -142,6 +219,20 @@ const Pixi = ({
       wordWrap: true,
     };
 
+    if (colortext === 'gradient') {
+      textStyleConfig.fill = [
+        "#ed1c24",
+        "#f78d1e",
+        "#ffdf00",
+        "#02ad5c",
+        "#0665c8",
+        "#81419c"
+      ];
+      textStyleConfig.fillGradientType = 1;
+    } else {
+      textStyleConfig.fill = `#${colortext}`;
+    }
+
     if (selectedStyle === 'Box') {
       designString = designString.replaceAll('%BOX_COLOR%', boxDesignColor);
     }
@@ -153,13 +244,13 @@ const Pixi = ({
     }
     if (selectedStyle === 'Gradient') {
       textStyleConfig.fill = '#ffffff';
+      designString = generateGradientDesign(gradient);
     }
     if (selectedStyle === 'Thumnail') {
       textStyleConfig.fontFamily = 'Y2k Fill';
       textStyleConfig.fontSize = 15;
-      layout = 'layout2'
+      layout = 'layout2';
     }
-
     const filter = new PIXI.Filter(null, designString, {
       uResolution: [maskImage.texture.width, maskImage.texture.height],
       uLineColor: uLineColor,
@@ -167,11 +258,18 @@ const Pixi = ({
 
     maskImage.filters = [filter];
 
+
     if (font === 'Peace Sans') {
-      textStyleConfig.stroke = '#050505';
-      textStyleConfig.strokeThickness = 5;
+      textStyleConfig.lineJoin = "round";
+      textStyleConfig.dropShadow = true;
+      textStyleConfig.dropShadowAngle = 2.6;
+      textStyleConfig.dropShadowColor = "#050505";
+      textStyleConfig.stroke = '#000000';
+      textStyleConfig.strokeThickness = 6;
+      textStyleConfig.font = 'Peace Sans'
       value = inputValue.slice(0, maxLength).toLowerCase();
     }
+
 
     const applyLayoutSpecificFontSize = (layout) => {
       let fontSize;
@@ -180,7 +278,7 @@ const Pixi = ({
 
       switch (layout) {
         case 'layout1':
-          fontSize = 160;
+          fontSize = 80;
           containerWidth = layoutDimensions.layout1.width;
           containerHeight = layoutDimensions.layout1.height;
           break;
@@ -190,12 +288,12 @@ const Pixi = ({
           containerHeight = layoutDimensions.layout2.height;
           break;
         case 'layout3':
-          fontSize = 200;  // Default font size for layout 3
+          fontSize = 150;  // Default font size for layout 3
           containerWidth = layoutDimensions.layout3.width;
           containerHeight = layoutDimensions.layout3.height;
           break;
         case 'layout4':
-          fontSize = 100;
+          fontSize = 150;
           containerWidth = layoutDimensions.layout4.width;
           containerHeight = layoutDimensions.layout4.height;
           break;
@@ -215,26 +313,55 @@ const Pixi = ({
     const applyLayout1 = (text, containerWidth, containerHeight) => {
       let textStyleConfig = {
         ...text.style,
-        fontSize: 150,
-        textBaseline: font === 'Y2k Fill' ? "alphabetic" : "bottom",
+        fontSize: 60,
+        textBaseline: font === 'Y2k Fill' ? "alphabetic" : "alphabetic",
       };
+      if (font === 'Peace Sans') {
+        textStyleConfig.lineJoin = "round";
+        textStyleConfig.dropShadow = true;
+        textStyleConfig.dropShadowAngle = 2.6;
+        textStyleConfig.dropShadowColor = "#050505";
+        textStyleConfig.stroke = '#000000';
+        textStyleConfig.strokeThickness = 6;
+        textStyleConfig.font = 'Peace Sans'
+        value = inputValue.slice(0, maxLength).toLowerCase();
+      }
       const style = new PIXI.TextStyle(textStyleConfig);
       text.style = style;
       text.rotation = 4.7124;
       text.anchor.set(0.5, 0.5); // Center the anchor point
-      text.x = app.screen.width - 360 / 2;
-      text.y = app.screen.height / 2 + 55;
+      const textArea = {
+        x: app.screen.width / 2 - containerWidth / 2,
+        y: app.screen.height / 2 - containerHeight / 2,
+        width: containerWidth,
+        height: containerHeight,
+      };
+      text.x = textArea.x + (textArea.width - text.height) / 2 + 20; // Adjust for rotation
+      text.y = textArea.y + (textArea.height - text.width) / 2 + 30; // Adjust for rotation
+      text.x = app.screen.width - 450 / 2 - 15;
+      text.y = app.screen.height / 2 + 60;
     };
 
     const applyLayout2 = (text, containerWidth, containerHeight) => {
       let textStyleConfig = {
         ...text.style,
         fontSize: selectedStyle === 'Thumnail' ? 70 : 150, // Adjust font size for Thumnail style
-          textBaseline: selectedStyle === 'Thumnail' ? "alphabetic" : "alphabetic",
+        textBaseline: selectedStyle === 'Thumnail' ? "alphabetic" : "alphabetic",
       };
+      if (font === 'Peace Sans') {
+        textStyleConfig.lineJoin = "round";
+        textStyleConfig.dropShadow = true;
+        textStyleConfig.dropShadowAngle = 2.6;
+        textStyleConfig.dropShadowColor = "#050505";
+        textStyleConfig.stroke = '#000000';
+        textStyleConfig.strokeThickness = 6;
+        textStyleConfig.font = 'Peace Sans'
+        value = inputValue.slice(0, maxLength).toLowerCase();
+      }
+
       const style = new PIXI.TextStyle(textStyleConfig);
       text.style = style;
-    
+
       if (selectedStyle === 'Thumnail') {
         // Custom positioning and dimensions for Thumnail style
         const textArea = {
@@ -257,43 +384,100 @@ const Pixi = ({
         text.y = textArea.y + (textArea.height - text.height) / 2 + 30;
       }
     };
-    
+
 
     let bottomText; // Define bottomText variable outside functions to make it accessible after initialization
 
     const applyLayout3 = (text, containerWidth, containerHeight) => {
+
       let textStyleConfig = {
         ...text.style,
         fontWeight: 'bold',
         fill: `#${colortext}`,
         fontFamily: `${font}`,
-        textBaseline: font === 'Y2k Fill' ? "alphabetic" : "bottom",
+        textBaseline: font === 'Y2k Fill' ? "alphabetic" : "alphabetic",
+        letterSpacing: 1,
       };
+      if (colortext === 'gradient') {
+        textStyleConfig.fill = [
+          "#ed1c24",
+          "#f78d1e",
+          "#ffdf00",
+          "#02ad5c",
+          "#0665c8",
+          "#81419c"
+        ];
+        textStyleConfig.fillGradientType = 1;
+      } else {
+        textStyleConfig.fill = `#${colortext}`;
+      }
+      // if (font === 'Peace Sans') {
+      //   textStyleConfig.stroke = '#050505';
+      //   textStyleConfig.strokeThickness = 5;
+      //   value = inputValue.slice(0, maxLength).toLowerCase();
+      // }
+      if (font === 'Peace Sans') {
+        textStyleConfig.lineJoin = "bevel";
+        textStyleConfig.dropShadow = true;
+        textStyleConfig.dropShadowAngle = 0.5;
+        textStyleConfig.dropShadowColor = "#050505";
+        textStyleConfig.stroke = '#000000';
+        textStyleConfig.strokeThickness = 2;
+        textStyleConfig.font = 'Peace Sans',
+          textStyleConfig.letterSpacing = 1,
+          value = inputValue.slice(0, maxLength).toLowerCase();
+      }
       const style = new PIXI.TextStyle(textStyleConfig);
       text.style = style;
       const textArea = {
         x: app.screen.width / 2 - 100,
-        y: app.screen.height / 2 - 20,
+        y: app.screen.height / 2 - 30,
         width: containerWidth,
         height: containerHeight,
       };
       // Calculate the position for the bottom alignment
-      text.x = textArea.x + (textArea.width - text.width) / 2 + 10;
-      text.y = app.screen.height - text.height - 70 + 30; // Adjust positioning as needed
+      text.x = textArea.x + (textArea.width - text.width) / 2 + 30;
+      text.y = app.screen.height - text.height - 70; // Adjust positioning as needed
     };
 
     const applyLayout4 = (text, containerWidth, containerHeight) => {
       let textStyleConfig = {
         ...text.style,
-        fontSize: 80,
-        textBaseline: font === 'Y2k Fill' ? "alphabetic" : "bottom",
+        letterSpacing: 1,
+        fontSize: font === 'Peace Sans' ? 85 : 75,
+        textBaseline: font === 'Y2k Fill' ? "alphabetic" : "alphabetic",
       };
+      if (font === 'Peace Sans') {
+        textStyleConfig.lineJoin = "round";
+        textStyleConfig.dropShadow = true;
+        textStyleConfig.dropShadowAngle = 2.1;
+        textStyleConfig.dropShadowColor = "#050505";
+        textStyleConfig.stroke = '#000000';
+        textStyleConfig.strokeThickness = 4;
+        textStyleConfig.font = 'Peace Sans';
+        textStyleConfig.letterSpacing = 1;
+        value = inputValue.slice(0, maxLength).toLowerCase();
+      }
+
       const style = new PIXI.TextStyle(textStyleConfig);
       text.style = style;
-      text.rotation = 4.7124;
-      text.anchor.set(0.5, 0.5); // Center the anchor point
-      text.x = app.screen.width / 2 - 10 + 30 ;
-      text.y = app.screen.height / 2 + 80 - 10 ;
+
+      // Set anchor to the center
+      text.anchor.set(0.5, 0.5);
+
+      // Define the container area
+      const textArea = {
+        x: (app.screen.width - containerWidth) / 2,
+        y: (app.screen.height - containerHeight) / 2,
+        width: containerWidth,
+        height: containerHeight,
+      };
+
+      // Adjust text position to fit within the container
+      text.x = textArea.x + textArea.width / 2 - 10;
+      text.y = textArea.y + textArea.height / 2 + 90;
+
+      text.rotation = 4.7124; // Rotate the text as needed
     };
 
     // Set the font size based on the layout
@@ -345,6 +529,9 @@ const Pixi = ({
     }
 
     app.stage.addChild(maskImage);
+
+    //Add gradient color 
+
     app.stage.addChild(text);
 
     if (bottomText) {
@@ -357,16 +544,6 @@ const Pixi = ({
       // Extract the base64 image data from the PIXI stage
       const image = app.renderer.plugins.extract.base64(app.stage);
       localStorage.setItem('base64', image);
-      // Set the base64 image data into the state
-      setBase64Image(image);
-
-      // Create a link element for downloading the image
-      const link = document.createElement('a');
-      link.href = image;
-      link.download = 'design.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     }
   };
 

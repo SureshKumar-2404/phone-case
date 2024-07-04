@@ -281,6 +281,10 @@
   margin-top: 20px;
   border: 1px solid black;
 }
+
+#root .gradient {
+  background: linear-gradient(90deg, #ed1c24, #f78d1e, #ffdf00, #02ad5c, #0665c8, #81419c);
+}
 /* font 6 */
 @font-face {
   font-family: 'Y2k Fill';

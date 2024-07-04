@@ -27,16 +27,23 @@ function App() {
   const [designs, setDesigns] = useState([]);
 
   const [colors, setColors] = useState([]);
+
   const [uLineColor, setULineColor] = useState([]);
 
   const [boxDesignColor, setBoxDesignColor] = useState(null);
 
   const [dotDesignColorId, setDotDesignColorId] = useState('Black');
+
   const [dotDesignColor, setDotDesignColor] = useState('white');
+
   const [errorMessage, setErrorMessage] = useState('');
 
-  const [thumnailDesign, setThumnailDesign] = useState('https://caseus.s3.ap-south-1.amazonaws.com/Teddy.svg');
+  const [gradientDesign, setGradientDesign] = useState('');
 
+  const [thumnailDesign, setThumnailDesign] = useState('https://caseusshopify.enactstage.com/caseusapi/images/Teddy.svg');
+
+  console.log('designs--------', designs);
+  console.log('gradientdesing--------',gradientDesign);
 
   const handleInputChange = (event) => {
     let value = event.target.value;
@@ -75,6 +82,13 @@ function App() {
   }, [layout, inputValue, font]);
 
   useEffect(() => {
+
+    const iconsItems = [
+      { id: "Flower", imageUrl: "https://caseus.s3.ap-south-1.amazonaws.com/icons/flower.svg" },
+      { id: "Heart", imageUrl: "https://caseus.s3.ap-south-1.amazonaws.com/icons/flower.svg" },
+      { id: "Star", imageUrl: "https://caseus.s3.ap-south-1.amazonaws.com/icons/flower.svg" },
+    ]
+
     const styleItems = [
       { id: "Simple", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/f92ba6ff4baac55a9a9d1bbc2c1ce2ee.svg" },
       { id: "Box", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/98c4f7a156418903d5b07d7302b75559.svg" },
@@ -120,9 +134,9 @@ function App() {
         { id: "TriGradient", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Stroke/Gradient/TriGradient.svg' },
       ],
       'Thumnail': [
-        { id: "Teddy", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Teddy.svg' },
-        { id: "Heart", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Heart.svg' },
-        { id: "Butterfly", imageUrl: 'https://caseus.s3.ap-south-1.amazonaws.com/Butterfly.svg' },
+        { id: "Teddy", imageUrl: 'https://caseusshopify.enactstage.com/caseusapi/images/Teddy.svg' },
+        { id: "Heart", imageUrl: 'https://caseusshopify.enactstage.com/caseusapi/images/Heart.svg' },
+        { id: "Butterfly", imageUrl: 'https://caseusshopify.enactstage.com/caseusapi/images/Butterfly.svg' },
       ]
     };
 
@@ -211,6 +225,7 @@ function App() {
 
     const colorItems = {
       'Simple': [
+        { id: "gradient", className: "gradient" },
         { id: "ffffff", className: "ffffff" },
         { id: "54b643", className: "#54b643" },
         { id: "ba2a25", className: "#ba2a25" },
@@ -218,7 +233,8 @@ function App() {
         { id: "fde04c", className: "#fde04c" },
         { id: "67cef0", className: "#67cef0" },
         { id: "ec46a4", className: "#ec46a4" },
-        { id: "f08dc8", className: "#f08dc8" }
+        { id: "f08dc8", className: "#f08dc8" },
+
       ],
       'Box': [
         { id: "ffffff", className: "ffffff" },
@@ -298,8 +314,9 @@ function App() {
       setDotDesignColor(designs[item.id][0]['dotColor']);
     } else if (item.id == 'Thumnail') {
       setThumnailDesign(designs[item.id][0]['imageUrl']);
+    } else if (item.id == 'Gradient') {
+      setGradientDesign(designs[item.id][0]['id']);
     }
-
   }
 
   const handleStyleDesignChange = (item) => {
@@ -312,9 +329,17 @@ function App() {
       setDotDesignColorId(item['id']);
       setDotDesignColor(item['dotColor']);
     }
-    if (selectedStyle == 'Thumnail') {
+    else if (selectedStyle == 'Dot') {
+      setDotDesignColorId(item['id']);
+      setDotDesignColor(item['dotColor']);
+    }
+    else if (selectedStyle == 'Thumnail') {
       setThumnailDesign(item['imageUrl']);
     }
+    else if (selectedStyle == 'Gradient') {
+      setGradientDesign(item['id']);
+    }
+
 
   }
 
@@ -354,7 +379,7 @@ function App() {
     <>
       <div className='main'>
         <div className="left-container">
-          <Pixi selectedStyle={selectedStyle} uLineColor={uLineColor} boxDesignColor={boxDesignColor} dotDesignColorId={dotDesignColorId} dotDesignColor={dotDesignColor} thumnailDesign={thumnailDesign} inputValue={inputValue} colortext={colortext} font={font} baseImg={baseImg} maskImg={maskImg} onExtractImage={handleExtractImage} layout={layout} />
+          <Pixi selectedStyle={selectedStyle} uLineColor={uLineColor} boxDesignColor={boxDesignColor} dotDesignColorId={dotDesignColorId} dotDesignColor={dotDesignColor} thumnailDesign={thumnailDesign} inputValue={inputValue} colortext={colortext} font={font} baseImg={baseImg} maskImg={maskImg} onExtractImage={handleExtractImage} layout={layout} gradient={gradientDesign}/>
 
           <div id="myCanvas"></div>
         </div>
@@ -430,7 +455,7 @@ function App() {
             <span className="spanstyle">Font</span>
             <ul className="text-center text-md-left dragscroll square-box font">
 
-                {(fontItems[selectedStyle] || []).map((item, index) => (
+              {(fontItems[selectedStyle] || []).map((item, index) => (
                 <li
                   key={item.id}
                   id={item.id}
@@ -468,8 +493,8 @@ function App() {
                 <li
                   key={item.id}
                   id={item.id}
-                  className={`item ${index === 0 ? 'active' : ''}`}
-                  style={{ backgroundColor: item.className }}
+                  className={`item ${index === 0 ? 'active' : ''} ${item.id === 'gradient' ? 'gradient' : ''}`}
+                  style={{ backgroundColor: item.id !== 'gradient' ? item.className : 'transparent' }}
                   onClick={() => setColorText(item.id)}
                 ></li>
               ))}
