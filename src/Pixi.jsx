@@ -127,12 +127,12 @@ const Pixi = ({
       color3: [0.933, 0.349, 0.208]  // #ee5935
     },
     'TriGradient': {
-      color1: [1.0, 0.0, 0.0],      // #ff0000
-      color2: [0.0, 1.0, 0.0],      // #00ff00
-      color3: [0.0, 0.0, 1.0]       // #0000ff
+      color1: [1.0, 0.0, 0.0],    // Red (#ff0000)
+      color2: [1.0, 1.0, 0.0],    // Yellow (#ffff00)
+      color3: [0.0, 1.0, 0.0]     // Green (#00ff00)
     }
   };
-  
+
 
   const gradientDesignTemplate = `
   precision mediump float;
@@ -326,6 +326,13 @@ const Pixi = ({
         textStyleConfig.font = 'Peace Sans'
         value = inputValue.slice(0, maxLength).toLowerCase();
       }
+      if (font === 'Brush Script MT') {
+        textStyleConfig.font = 'Peace Sans';
+        textStyleConfig.fontSize = 70;
+        textStyleConfig.wordWrap = true;
+        textStyleConfig.wordWrapWidth = containerWidth;
+        textStyleConfig.lineHeight= 30
+      }
       const style = new PIXI.TextStyle(textStyleConfig);
       text.style = style;
       text.rotation = 4.7124;
@@ -359,6 +366,13 @@ const Pixi = ({
         value = inputValue.slice(0, maxLength).toLowerCase();
       }
 
+      if (font === 'Brush Script MT') {
+        textStyleConfig.font = 'Peace Sans';
+        textStyleConfig.fontSize = 70;
+        textStyleConfig.wordWrap = true;
+        textStyleConfig.wordWrapWidth = containerWidth;
+        textStyleConfig.lineHeight= 30
+      }
       const style = new PIXI.TextStyle(textStyleConfig);
       text.style = style;
 
@@ -427,6 +441,14 @@ const Pixi = ({
           textStyleConfig.letterSpacing = 1,
           value = inputValue.slice(0, maxLength).toLowerCase();
       }
+
+      if (font === 'Brush Script MT') {
+        textStyleConfig.font = 'Peace Sans';
+        textStyleConfig.fontSize = 70;
+        textStyleConfig.wordWrap = true;
+        textStyleConfig.wordWrapWidth = containerWidth;
+        textStyleConfig.lineHeight = 30;
+      }
       const style = new PIXI.TextStyle(textStyleConfig);
       text.style = style;
       const textArea = {
@@ -458,7 +480,13 @@ const Pixi = ({
         textStyleConfig.letterSpacing = 1;
         value = inputValue.slice(0, maxLength).toLowerCase();
       }
-
+      if (font === 'Brush Script MT') {
+        textStyleConfig.font = 'Peace Sans';
+        textStyleConfig.fontSize = 70;
+        textStyleConfig.wordWrap = true;
+        textStyleConfig.wordWrapWidth = containerWidth;
+        textStyleConfig.lineHeight= 30
+      }
       const style = new PIXI.TextStyle(textStyleConfig);
       text.style = style;
 

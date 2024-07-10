@@ -42,9 +42,6 @@ function App() {
 
   const [thumnailDesign, setThumnailDesign] = useState('https://caseusshopify.enactstage.com/caseusapi/images/Teddy.svg');
 
-  console.log('designs--------', designs);
-  console.log('gradientdesing--------',gradientDesign);
-
   const handleInputChange = (event) => {
     let value = event.target.value;
     const maxLength = layout === 'layout4' ? 3 : 8;
@@ -294,6 +291,8 @@ function App() {
         if (data) {
           setBaseImg(data.product_base_img); // Adjust based on your data structure
           setMaskImg(data.product_mask_img); // Adjust based on your data structure
+          localStorage.setItem('product_width', data.product_width);
+          localStorage.setItem('product_height', data.product_height);
         }
       } catch (error) {
         console.error('Error fetching product data:', error);
@@ -379,7 +378,7 @@ function App() {
     <>
       <div className='main'>
         <div className="left-container">
-          <Pixi selectedStyle={selectedStyle} uLineColor={uLineColor} boxDesignColor={boxDesignColor} dotDesignColorId={dotDesignColorId} dotDesignColor={dotDesignColor} thumnailDesign={thumnailDesign} inputValue={inputValue} colortext={colortext} font={font} baseImg={baseImg} maskImg={maskImg} onExtractImage={handleExtractImage} layout={layout} gradient={gradientDesign}/>
+          <Pixi selectedStyle={selectedStyle} uLineColor={uLineColor} boxDesignColor={boxDesignColor} dotDesignColorId={dotDesignColorId} dotDesignColor={dotDesignColor} thumnailDesign={thumnailDesign} inputValue={inputValue} colortext={colortext} font={font} baseImg={baseImg} maskImg={maskImg} onExtractImage={handleExtractImage} layout={layout} gradient={gradientDesign} />
 
           <div id="myCanvas"></div>
         </div>

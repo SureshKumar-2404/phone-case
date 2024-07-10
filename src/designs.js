@@ -140,7 +140,7 @@ void main(void) {
 }
 `;
 
-const dotDesign1= `
+const dotDesign1 = `
 precision mediump float;
 
 uniform sampler2D uSampler;
@@ -149,13 +149,76 @@ uniform vec2 uResolution;
 uniform vec4 uLineColor;
 
 vec4 getGradientColor(vec2 uv) {
-    vec4 color1 = vec4(0.835, 0.231, 0.231, 1.0); // hsla(0, 64%, 53%, 1)
-    vec4 color2 = vec4(0.988, 0.816, 0.404, 1.0); // hsla(47, 92%, 65%, 1)
-    vec4 color3 = vec4(0.49, 0.969, 0.196, 1.0); // hsla(125, 98%, 50%, 1)
-    vec4 color4 = vec4(0.196, 0.784, 0.922, 1.0); // hsla(209, 100%, 47%, 1)
+    vec4 color1 = vec4(0.694, 0.922, 0.949, 1.0); // #b1ebf2
+    vec4 color2 = vec4(0.827, 0.816, 0.690, 1.0); // #d3d0b0
+    vec4 color3 = vec4(0.933, 0.357, 0.212, 1.0); // #ee5b36
 
     vec4 topColor = mix(color1, color2, uv.x);
-    vec4 bottomColor = mix(color3, color4, uv.x);
+    vec4 bottomColor = mix(color2, color3, uv.x);
+    return mix(bottomColor, topColor, uv.y);
+}
+
+void main(void) {
+    vec4 color = texture2D(uSampler, vTextureCoord);
+
+    vec2 imageSize = uResolution; // Use the provided resolution
+    vec2 uv = vTextureCoord * imageSize;
+
+    // Define grid size and dot radius
+    float gridSizeX = 35.0; // Distance between dot centers horizontally
+    float gridSizeY = 15.0; // Distance between dot centers vertically
+    float dotRadius = 6.0; // Radius of each dot
+
+    // Calculate the row and column index
+    float rowIndex = floor(uv.y / gridSizeY);
+    float colIndex = floor((uv.x - (mod(rowIndex, 2.0) * gridSizeX * 0.5)) / gridSizeX);
+
+    // Apply an offset for every other row to create a staggered effect
+    float offsetX = mod(rowIndex, 2.0) * gridSizeX * 0.5;
+
+    // Calculate the position of the current point in the grid with the offset
+    vec2 gridPosition = mod(vec2(uv.x - offsetX, uv.y), vec2(gridSizeX, gridSizeY));
+
+    // Calculate the distance from the center of the current grid cell
+    vec2 distanceFromCenter = gridPosition - vec2(gridSizeX * 0.5, gridSizeY * 0.5);
+    float distance = length(distanceFromCenter);
+
+    // Check if the distance is less than the dot radius to determine if the current point is within a dot
+    bool isDot = distance < dotRadius;
+
+    if (color.a == 0.0) {
+        if (isDot) {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Set dot color to white
+        } else {
+            gl_FragColor = getGradientColor(vTextureCoord); // Gradient background color
+        }
+    } else if (color.r == 0.0 && color.g == 0.0 && color.b == 0.0) {
+        // Change black part to transparent
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+    } else if (color.r == 1.0 && color.g == 1.0 && color.b == 1.0) {
+        // Change white part to transparent
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+    } else {
+        // Keep other colors unchanged
+        gl_FragColor = vec4(color.rgb, 1.0);
+    }
+}
+`;
+const dotDesign2 = `
+precision mediump float;
+
+uniform sampler2D uSampler;
+varying vec2 vTextureCoord;
+uniform vec2 uResolution;
+uniform vec4 uLineColor;
+
+vec4 getGradientColor(vec2 uv) {
+    vec4 color1 = vec4(0.627, 0.125, 0.941, 1.0); // Purple, #a020f0
+    vec4 color2 = vec4(1.0, 0.412, 0.706, 1.0);  // Pink, #ff69b4
+    vec4 color3 = vec4(1.0, 0.549, 0.0, 1.0);    // Orange, #ff8c00
+
+    vec4 topColor = mix(color1, color2, uv.x);
+    vec4 bottomColor = mix(color2, color3, uv.x);
     return mix(bottomColor, topColor, uv.y);
 }
 
@@ -206,6 +269,8 @@ void main(void) {
 }
 `;
 
+
+
 const gradientDesign = `
 precision mediump float;
 
@@ -252,7 +317,7 @@ const designs = {
         'White': dotDesign,
         'Black': dotDesign,
         'OrangeGradient': dotDesign1,
-        'PinkGradient': dotDesign1,
+        'PinkGradient': dotDesign2,
     },
     'Gradient': gradientDesign,
     'Thumnail': simpleDesign
