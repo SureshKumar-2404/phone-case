@@ -24,6 +24,8 @@ const Pixi = ({
 
   // State to store base64 image data
   const [base64Image, setBase64Image] = useState('');
+  console.log('layout-------', layout);
+  console.log('inputValue', inputValue);
 
   useEffect(() => {
     if (baseImg && maskImg) {
@@ -133,6 +135,10 @@ const Pixi = ({
     }
   };
 
+
+  //Monogram Print Layout
+
+  // console.log('messageoutside the if condition-----', messages);
 
   const gradientDesignTemplate = `
   precision mediump float;
@@ -270,6 +276,9 @@ const Pixi = ({
       value = inputValue.slice(0, maxLength).toLowerCase();
     }
 
+    //Monogram
+    // let messages = []; // Array to store all message objects
+
 
     const applyLayoutSpecificFontSize = (layout) => {
       let fontSize;
@@ -331,7 +340,7 @@ const Pixi = ({
         textStyleConfig.fontSize = 70;
         textStyleConfig.wordWrap = true;
         textStyleConfig.wordWrapWidth = containerWidth;
-        textStyleConfig.lineHeight= 30
+        textStyleConfig.lineHeight = 30
       }
       const style = new PIXI.TextStyle(textStyleConfig);
       text.style = style;
@@ -371,7 +380,7 @@ const Pixi = ({
         textStyleConfig.fontSize = 70;
         textStyleConfig.wordWrap = true;
         textStyleConfig.wordWrapWidth = containerWidth;
-        textStyleConfig.lineHeight= 30
+        textStyleConfig.lineHeight = 30
       }
       const style = new PIXI.TextStyle(textStyleConfig);
       text.style = style;
@@ -398,10 +407,7 @@ const Pixi = ({
         text.y = textArea.y + (textArea.height - text.height) / 2 + 30;
       }
     };
-
-
     let bottomText; // Define bottomText variable outside functions to make it accessible after initialization
-
     const applyLayout3 = (text, containerWidth, containerHeight) => {
 
       let textStyleConfig = {
@@ -461,6 +467,7 @@ const Pixi = ({
       text.x = textArea.x + (textArea.width - text.width) / 2 + 30;
       text.y = app.screen.height - text.height - 70; // Adjust positioning as needed
     };
+    //Make Monogram Design
 
     const applyLayout4 = (text, containerWidth, containerHeight) => {
       let textStyleConfig = {
@@ -485,7 +492,7 @@ const Pixi = ({
         textStyleConfig.fontSize = 70;
         textStyleConfig.wordWrap = true;
         textStyleConfig.wordWrapWidth = containerWidth;
-        textStyleConfig.lineHeight= 30
+        textStyleConfig.lineHeight = 30
       }
       const style = new PIXI.TextStyle(textStyleConfig);
       text.style = style;
@@ -507,6 +514,7 @@ const Pixi = ({
 
       text.rotation = 4.7124; // Rotate the text as needed
     };
+
 
     // Set the font size based on the layout
     const { fontSize, containerWidth, containerHeight } = applyLayoutSpecificFontSize(layout);
@@ -556,12 +564,81 @@ const Pixi = ({
       app.stage.removeChild(thumnailImage);
     }
 
+    if (layout === 'layout5') {
+      let inputValue="AB"
+      const letters = inputValue.split("");
+      const firstLetter = letters[0].toUpperCase();
+      const secondLetter = letters[1] ? letters[1].toUpperCase() : firstLetter;
+
+      // Text styles for the alternating letters
+      const textStyleA = new PIXI.TextStyle({
+        fontFamily: "Guyon Gazebo",
+        fontSize: 80,
+        fill: "#fff9dc",
+        align: "center",
+        stroke: "#000000",
+        strokeThickness: 3,
+      });
+
+      console.log('colortext------------',colortext)
+      const textStyleB = new PIXI.TextStyle({
+        fontFamily: "Guyon Gazebo",
+        fontSize: 80,
+        fill:`#${colortext}`,
+        align: "center",
+        stroke: "#000000",
+        strokeThickness: 3,
+      });
+
+      const settings = {
+        letters: [firstLetter, secondLetter],
+        spacingX: 50,
+        spacingY: 100,
+        offsetY: 20,
+        rotation: Math.PI / 10,
+      };
+
+      const maskArea = {
+        width: maskImage.texture.width,
+        height: maskImage.texture.height,
+        x: app.screen.width / 2 - maskImage.texture.width / 2,
+        y: app.screen.height / 2 - maskImage.texture.height / 2,
+      };
+
+      for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+          const letterIndex = col % settings.letters.length;
+          const letter = settings.letters[letterIndex];
+          const textStyle = letterIndex === 0 ? textStyleA : textStyleB;
+
+          const message = new PIXI.Text(letter, textStyle);
+          message.anchor.set(0.5);
+
+          // Calculate position based on the mask area
+          const xPosition = maskArea.x + (col * settings.spacingX);
+          const yPosition = maskArea.y + (row * settings.spacingY) + (letterIndex === 1 ? settings.offsetY : 0);
+
+          // Ensure the text fits within the mask area
+          if (xPosition < maskArea.x + maskArea.width && yPosition < maskArea.y + maskArea.height) {
+            message.position.set(xPosition, yPosition);
+            app.stage.addChild(message);
+          }
+        }
+      }
+    }
+
     app.stage.addChild(maskImage);
 
     //Add gradient color 
 
-    app.stage.addChild(text);
 
+
+    // app.stage.addChild(text);
+    // console.log(messages);
+
+    // app.stage.addChild(messages);
+
+    // app.stage.addChild(a);
     if (bottomText) {
       app.stage.addChild(bottomText);
     }

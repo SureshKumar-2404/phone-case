@@ -42,6 +42,11 @@ function App() {
 
   const [thumnailDesign, setThumnailDesign] = useState('https://caseusshopify.enactstage.com/caseusapi/images/Teddy.svg');
 
+  const [layoutColor, setLayoutColor] = useState([]);
+
+
+  console.log('layoutColor-------', layoutColor);
+  // console.log('layoutvalue1111222-----------', layout);
   const handleInputChange = (event) => {
     let value = event.target.value;
     const maxLength = layout === 'layout4' ? 3 : 8;
@@ -139,53 +144,54 @@ function App() {
 
     setDesigns(design);
 
-    const fontItems = {
-      'Simple': [
-        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
-        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
-        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
-        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
-        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
-        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-      ],
-      'Box': [
-        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
-        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
-        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
-        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
-        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
-        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-      ],
-      'Dot': [
-        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
-        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
-        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
-        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
-        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
-        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-      ],
-      'Stroke': [
-        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
-        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
-        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
-        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
-        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
-        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-      ],
-      'Gradient': [
-        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
-        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
-        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
-        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
-        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
-        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-      ],
-      'Thumnail': [
-        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-      ]
-    };
 
-    setFontItems(fontItems);
+    // const fontItems = {
+    //   'Simple': [
+    //     { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+    //     { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+    //     { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+    //     { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+    //     { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+    //   ],
+    //   'Box': [
+    //     { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+    //     { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+    //     { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+    //     { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+    //     { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+    //   ],
+    //   'Dot': [
+    //     { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+    //     { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+    //     { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+    //     { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+    //     { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+    //   ],
+    //   'Stroke': [
+    //     { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+    //     { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+    //     { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+    //     { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+    //     { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+    //   ],
+    //   'Gradient': [
+    //     { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+    //     { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+    //     { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+    //     { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+    //     { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+    //   ],
+    //   'Thumnail': [
+    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+    //   ]
+    // };
+
+    // setFontItems(fontItems);
 
     const layoutItems = {
       'Simple': [
@@ -193,6 +199,7 @@ function App() {
         { id: "layout2", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/ac417f35ab911f8462a6e5a438b4d7a7.svg" },
         { id: "layout3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/228dc318b4d260bf0ec1d950ce9c8beb.svg" },
         { id: "layout4", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/4adc012cc49894d833c9b202dcf291b0.svg" },
+        { id: "layout5", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/4ca09b8117dea1765e1e84f867c36dec.svg" },
       ],
       'Box': [
         { id: "layout1", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/9c4c82cc261cf174d9d201373a1d02e4.svg" },
@@ -220,6 +227,58 @@ function App() {
     };
     setLayoutItems(layoutItems);
 
+    //Layout Design
+    const LayoutFontItems = {
+      'layout1': [
+        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+      ],
+      'layout2': [
+        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+      ],
+      'layout3': [
+        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+      ],
+      'layout4': [
+        { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
+        { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
+        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+        { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
+        { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
+        { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
+      ],
+      'layout5': [
+        { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
+      ]
+    }
+    setFontItems(LayoutFontItems);
+
+    const LayoutColorItems = {
+      'layout5': [
+        { id: "185283", className: '#185283' },
+        { id: "a34322", className: '#a34322' },
+        { id: "32764f", className: '#32764f' },
+        { id: "0a72f6", className: '#0a72f6' },
+        { id: "ef6637", className: '#ef6637' },
+        { id: "65de9a", className: '#65de9a' }
+      ]
+    }
+    setLayoutColor(LayoutColorItems);
+
     const colorItems = {
       'Simple': [
         { id: "gradient", className: "gradient" },
@@ -231,7 +290,6 @@ function App() {
         { id: "67cef0", className: "#67cef0" },
         { id: "ec46a4", className: "#ec46a4" },
         { id: "f08dc8", className: "#f08dc8" },
-
       ],
       'Box': [
         { id: "ffffff", className: "ffffff" },
@@ -275,16 +333,21 @@ function App() {
       ]
     };
     setColors(colorItems);
-
   }, []);
 
+  if (layout in layoutColor) {
+    console.log('layoutcolor exists:', layoutColor[layout]);
+  } else {
+    console.log('layoutcolor does not exist');
+  }
+
   useEffect(() => {
-    const product_id = document.querySelector('input[name="product-id"]') ? document.querySelector('input[name="product-id"]').value : null;
+    // const product_id = document.querySelector('input[name="product-id"]') ? document.querySelector('input[name="product-id"]').value : null;
     // // console.log('Product ID:', product_id); // Debugging log
-    // const product_id = 8230530842822
+    const product_id = 8230530842822
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapi/product/data`, {
+        const response = await axios.get(`http://localhost:8006/product/data`, {
           params: { id: product_id }
         });
         const data = response.data.data;
@@ -338,9 +401,8 @@ function App() {
     else if (selectedStyle == 'Gradient') {
       setGradientDesign(item['id']);
     }
-
-
   }
+
 
   const appRef = useRef(null);
 
@@ -374,6 +436,8 @@ function App() {
     }
   };
   const displayValue = font === 'Peace Sans' ? inputValue.toLowerCase() : inputValue.toUpperCase();
+  // Determine the colors to be displayed based on the selected layout
+
   return (
     <>
       <div className='main'>
@@ -405,10 +469,10 @@ function App() {
                     value={inputValue}
                     onChange={handleInputChange}
                     placeholder="Enter text"
-                    maxLength={layout === 'layout4' ? 3 : 8}
+                    maxLength={layout === 'layout5' ? 2 : layout === 'layout4' ? 3 : 8}
                   />
                   <span className="character-count">
-                    {`(${displayValue.length}/${layout === 'layout4' ? 3 : 8})`}
+                    {`(${displayValue.length}/${layout === 'layout5' ? 2 : layout === 'layout4' ? 3 : 8})`}
                   </span>
                 </div>
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
@@ -450,25 +514,6 @@ function App() {
             )
           }
 
-          <div className="selector-container">
-            <span className="spanstyle">Font</span>
-            <ul className="text-center text-md-left dragscroll square-box font">
-
-              {(fontItems[selectedStyle] || []).map((item, index) => (
-                <li
-                  key={item.id}
-                  id={item.id}
-                  className={`item ${index === 0 ? 'active' : ''}`}
-                  style={{
-                    backgroundImage: `url(${item.imageUrl})`,
-                    fontFamily: item.font // Set the font family dynamically
-                  }}
-                  onClick={() => setFont(item.font)}
-                ></li>
-              ))}
-            </ul>
-          </div>
-
           <div className="layout-container">
             <span className="spanstyle">Layout</span>
             <ul className="text-center text-md-left square-box layout">
@@ -485,20 +530,43 @@ function App() {
             </ul>
           </div>
 
-          <div className="color-container">
-            <span className="spanstyle ">Color</span>
-            <ul className="text-center text-md-left circle-button color">
-              {(colors[selectedStyle] || [0]).map((item, index) => (
+          <div className="selector-container">
+            <span className="spanstyle">Font</span>
+            <ul className="text-center text-md-left dragscroll square-box font">
+
+              {(fontItems[layout] || []).map((item, index) => (
                 <li
                   key={item.id}
                   id={item.id}
-                  className={`item ${index === 0 ? 'active' : ''} ${item.id === 'gradient' ? 'gradient' : ''}`}
-                  style={{ backgroundColor: item.id !== 'gradient' ? item.className : 'transparent' }}
-                  onClick={() => setColorText(item.id)}
+                  className={`item ${index === 0 ? 'active' : ''}`}
+                  style={{
+                    backgroundImage: `url(${item.imageUrl})`,
+                    fontFamily: item.font // Set the font family dynamically
+                  }}
+                  onClick={() => setFont(item.font)}
                 ></li>
               ))}
             </ul>
           </div>
+
+          <div className="color-container">
+            <span className="spanstyle">Color</span>
+            <ul className="text-center text-md-left circle-button color">
+              {((layout in layoutColor) && colors[selectedStyle].length === 9
+                ? layoutColor[layout] // Use the array defined for layout5
+                : colors[selectedStyle] || [0]) // Use the default array
+                .map((item, index) => (
+                  <li
+                    key={item.id}
+                    id={item.id}
+                    className={`item ${index === 0 ? 'active' : ''} ${item.id === 'gradient' ? 'gradient' : ''}`}
+                    style={{ backgroundColor: item.id !== 'gradient' ? item.className : 'transparent' }}
+                    onClick={() => setColorText(item.id)}
+                  ></li>
+                ))}
+            </ul>
+          </div>
+
 
           <button className='complete' onClick={handleCompleteClick}>Complete</button>
 
