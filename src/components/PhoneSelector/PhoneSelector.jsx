@@ -52,6 +52,7 @@ const PhoneSelector = () => {
 
   return (
     <div>
+
       <div>
         <label>Select Company:</label>
         <select value={selectedCompany} onChange={handleCompanyChange}>
@@ -73,6 +74,8 @@ const PhoneSelector = () => {
           ))}
         </select>
       </div>
+
+      <button onClick>Customization</button>
 
       {productInfo.title && (
         <div>
