@@ -45,7 +45,28 @@ function App() {
   const [layoutColor, setLayoutColor] = useState([]);
 
 
-  console.log('layoutColor-------', layoutColor);
+  useEffect(() => {
+    localStorage.setItem('inputValue', inputValue);
+    localStorage.setItem('fontItems', JSON.stringify(fontItems));
+    localStorage.setItem('baseImg', baseImg);
+    localStorage.setItem('maskImg', maskImg);
+    localStorage.setItem('font', font);
+    localStorage.setItem('layoutItems', JSON.stringify(layoutItems));
+    localStorage.setItem('layout', layout);
+    localStorage.setItem('colortext', colortext);
+    localStorage.setItem('styles', JSON.stringify(styles));
+    localStorage.setItem('selectedStyle', selectedStyle);
+    localStorage.setItem('designs', JSON.stringify(designs));
+    localStorage.setItem('colors', JSON.stringify(colors));
+    localStorage.setItem('boxDesignColor', boxDesignColor);
+    localStorage.setItem('dotDesignColorId', dotDesignColorId);
+    localStorage.setItem('dotDesignColor', dotDesignColor);
+    localStorage.setItem('gradientDesign', gradientDesign);
+    localStorage.setItem('thumnailDesign', thumnailDesign);
+    localStorage.setItem('layoutColor', JSON.stringify(layoutColor));
+    localStorage.setItem('errorMessage', errorMessage);
+
+  }, [inputValue,fontItems,baseImg,maskImg,font,layoutItems,layout,colortext,styles, selectedStyle,designs,colors,boxDesignColor,dotDesignColorId,dotDesignColor,gradientDesign,thumnailDesign,layoutColor,errorMessage]);
   // console.log('layoutvalue1111222-----------', layout);
   const handleInputChange = (event) => {
     let value = event.target.value;

@@ -1,0 +1,14 @@
+/* PhoneSelector.css */
+.variants-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Adjust spacing between items */
+  }
+  
+  .variant-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  

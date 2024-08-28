@@ -54,11 +54,15 @@ const Pixi = ({
         const maskImage = new PIXI.Sprite(resources.mask.texture);
         baseImage.anchor.set(0.5);
         baseImage.x = app.screen.width / 2;
+        console.log('baseImageX height', baseImage.x)
         baseImage.y = app.screen.height / 2;
+        console.log('baseImageY height', baseImage.y)
 
         maskImage.anchor.set(0.5);
         maskImage.x = app.screen.width / 2;
+        console.log('maskImageX height', maskImage.x)
         maskImage.y = app.screen.height / 2;
+        console.log('maskImageY height', maskImage.y)
         maskImageRef.current = maskImage;
 
         app.stage.addChild(baseImage);
@@ -176,6 +180,7 @@ const Pixi = ({
       }
   }
   `;
+  // Function to generate the monogram pattern
 
   function generateGradientDesign(gradient) {
     if (gradient in gradientColors) {
@@ -188,7 +193,47 @@ const Pixi = ({
     }
     return gradientDesignTemplate; // Default design
   }
+  //Monogram Pattern
+  const generateMonogramPattern = (letters, color1, color2, spacing, fontSize) => {
+    if (!maskImageRef.current) return;
 
+    // Clear previous text elements
+    maskImageRef.current.removeChildren();
+
+    const textStyle1 = new PIXI.TextStyle({
+      fontFamily: font,
+      fontSize: fontSize,
+      fill: color1,
+    });
+
+    const textStyle2 = new PIXI.TextStyle({
+      fontFamily: font,
+      fontSize: fontSize,
+      fill: color2,
+    });
+
+    const letter1 = new PIXI.Text(letters[0], textStyle1);
+    const letter2 = new PIXI.Text(letters[1], textStyle2);
+
+    const patternWidth = letter1.width + spacing;
+    const patternHeight = letter1.height + spacing;
+
+    const numRows = Math.ceil(appRef.current.view.height / patternHeight);
+    const numCols = Math.ceil(appRef.current.view.width / patternWidth);
+
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numCols; col++) {
+        const x = col * patternWidth;
+        const y = row * patternHeight;
+
+        const isEvenPosition = (row + col) % 2 === 0;
+        const letter = isEvenPosition ? new PIXI.Text(letters[0], textStyle1) : new PIXI.Text(letters[1], textStyle2);
+
+        letter.position.set(x, y);
+        maskImageRef.current.addChild(letter);
+      }
+    }
+  };
   const updateDesign = () => {
     const app = appRef.current;
     const maskImage = maskImageRef.current;
@@ -257,6 +302,8 @@ const Pixi = ({
       textStyleConfig.fontSize = 15;
       layout = 'layout2';
     }
+    console.log('maskImage.texture.width', maskImage.texture.width);
+    console.log('maskImage.texture.height', maskImage.texture.height)
     const filter = new PIXI.Filter(null, designString, {
       uResolution: [maskImage.texture.width, maskImage.texture.height],
       uLineColor: uLineColor,
@@ -564,8 +611,11 @@ const Pixi = ({
       app.stage.removeChild(thumnailImage);
     }
 
+    app.stage.addChild(maskImage);
+
+    //Add gradient color 
     if (layout === 'layout5') {
-      let inputValue="AB"
+      let inputValue = "AB";
       const letters = inputValue.split("");
       const firstLetter = letters[0].toUpperCase();
       const secondLetter = letters[1] ? letters[1].toUpperCase() : firstLetter;
@@ -580,11 +630,10 @@ const Pixi = ({
         strokeThickness: 3,
       });
 
-      console.log('colortext------------',colortext)
       const textStyleB = new PIXI.TextStyle({
         fontFamily: "Guyon Gazebo",
         fontSize: 80,
-        fill:`#${colortext}`,
+        fill: `#${colortext}`,
         align: "center",
         stroke: "#000000",
         strokeThickness: 3,
@@ -592,10 +641,12 @@ const Pixi = ({
 
       const settings = {
         letters: [firstLetter, secondLetter],
-        spacingX: 50,
-        spacingY: 100,
-        offsetY: 20,
-        rotation: Math.PI / 10,
+        spacingX: 50, // Horizontal spacing between letters
+        spacingY: 100, // Vertical spacing between letters
+        offsetY: 20,  // Vertical offset for the second letter
+        rotation: Math.PI / 10, // Rotation angle for the letters
+        rowCount: 11, // Number of rows
+        columnCount: 11, // Number of columns
       };
 
       const maskArea = {
@@ -605,8 +656,11 @@ const Pixi = ({
         y: app.screen.height / 2 - maskImage.texture.height / 2,
       };
 
-      for (let row = 0; row < 10; row++) {
-        for (let col = 0; col < 10; col++) {
+      // Create a container to hold the text
+      const textContainer = new PIXI.Container();
+
+      for (let row = 0; row < settings.rowCount; row++) {
+        for (let col = 0; col < settings.columnCount; col++) {
           const letterIndex = col % settings.letters.length;
           const letter = settings.letters[letterIndex];
           const textStyle = letterIndex === 0 ? textStyleA : textStyleB;
@@ -614,31 +668,52 @@ const Pixi = ({
           const message = new PIXI.Text(letter, textStyle);
           message.anchor.set(0.5);
 
-          // Calculate position based on the mask area
+          // Calculate position based on the mask area and row/column indices
           const xPosition = maskArea.x + (col * settings.spacingX);
           const yPosition = maskArea.y + (row * settings.spacingY) + (letterIndex === 1 ? settings.offsetY : 0);
 
           // Ensure the text fits within the mask area
           if (xPosition < maskArea.x + maskArea.width && yPosition < maskArea.y + maskArea.height) {
             message.position.set(xPosition, yPosition);
+            message.rotation = settings.rotation;
             app.stage.addChild(message);
           }
         }
       }
+
+      // Define the fragment shader for the filter
+      const designString = `
+          varying vec2 vTextureCoord;
+          uniform sampler2D uSampler;
+          uniform vec2 uResolution;
+          uniform vec4 uLineColor;
+  
+          void main(void) {
+              vec4 color = texture2D(uSampler, vTextureCoord);
+  
+              // Example shader logic: make black parts transparent
+              if (color.r == 0.0 && color.g == 0.0 && color.b == 0.0) {
+                  gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+              } else {
+                  gl_FragColor = color;
+              }
+          }
+      `;
+
+      // Create and apply the filter
+      const filter = new PIXI.Filter(null, designString, {
+        uResolution: [maskImage.texture.width, maskImage.texture.height],
+        uLineColor: [1.0, 1.0, 0.0, 1.0], // Example: Yellow color for the line (RGBA)
+      });
+
+      textContainer.filters = [filter];
+
+      // Add the text container to the stage
+      app.stage.addChild(textContainer);
     }
 
-    app.stage.addChild(maskImage);
+    app.stage.addChild(text);
 
-    //Add gradient color 
-
-
-
-    // app.stage.addChild(text);
-    // console.log(messages);
-
-    // app.stage.addChild(messages);
-
-    // app.stage.addChild(a);
     if (bottomText) {
       app.stage.addChild(bottomText);
     }
