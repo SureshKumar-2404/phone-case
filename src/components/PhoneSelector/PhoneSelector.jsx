@@ -1,16 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './PhoneSelector.css'; // Import the CSS file for styling
+import './PhoneSelector.css';
+import { useNavigate } from 'react-router-dom';
 
 const PhoneSelector = () => {
-  const [selectedCompany, setSelectedCompany] = useState('');
-  const [devices, setDevices] = useState([]);
-  const [selectedDevice, setSelectedDevice] = useState('');
-  const [productInfo, setProductInfo] = useState({});
+  const navigate = useNavigate();
+  const [selectedCompany, setSelectedCompany] = useState(localStorage.getItem('selectedCompany') || '');
+  const [devices, setDevices] = useState(JSON.parse(localStorage.getItem('devices')) || []);
+  const [selectedDevice, setSelectedDevice] = useState(localStorage.getItem('selectedDevice') || '');
+  const [productInfo, setProductInfo] = useState(JSON.parse(localStorage.getItem('productInfo')) || {});
+
+  useEffect(() => {
+    // Fetch devices if company is already selected
+    if (selectedCompany) {
+      handleCompanyChange({ target: { value: selectedCompany } });
+    }
+    // Fetch product info if device is already selected
+    if (selectedDevice) {
+      handleDeviceChange({ target: { value: selectedDevice } });
+    }
+  }, []); // Empty dependency array means this effect runs once on mount
 
   const handleCompanyChange = async (event) => {
     const collectionId = event.target.value;
     setSelectedCompany(collectionId);
+    localStorage.setItem('selectedCompany', collectionId);
     setDevices([]); // Clear previous devices
     setSelectedDevice(''); // Clear selected device
     setProductInfo({}); // Clear product info
@@ -21,6 +35,7 @@ const PhoneSelector = () => {
           params: { collection_id: collectionId }
         });
         setDevices(response.data);
+        localStorage.setItem('devices', JSON.stringify(response.data));
       } catch (error) {
         console.error('Error fetching products:', error);
       }
@@ -30,29 +45,32 @@ const PhoneSelector = () => {
   const handleDeviceChange = async (event) => {
     const productId = event.target.value;
     setSelectedDevice(productId);
+    localStorage.setItem('selectedDevice', productId);
     setProductInfo({}); // Clear product info
 
     if (productId) {
       try {
         const response = await axios.get(`http://localhost:8006/products/${productId}`);
         setProductInfo(response.data);
+        localStorage.setItem('productInfo', JSON.stringify(response.data));
       } catch (error) {
         console.error('Error fetching product details:', error);
       }
     }
   };
 
-  // Filter out variants with the title "Default Title"
   const filteredVariants = productInfo.variants
     ? productInfo.variants.filter(variant => variant.title !== "Default Title")
     : [];
 
-  // Check if there are any valid variants to display
   const hasValidVariants = filteredVariants.length > 0;
+
+  const navCustome = () => {
+    navigate('/custom');
+  };
 
   return (
     <div>
-
       <div>
         <label>Select Company:</label>
         <select value={selectedCompany} onChange={handleCompanyChange}>
@@ -75,7 +93,7 @@ const PhoneSelector = () => {
         </select>
       </div>
 
-      <button onClick>Customization</button>
+      <button onClick={() => navCustome()}>Customization</button>
 
       {productInfo.title && (
         <div>

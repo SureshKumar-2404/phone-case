@@ -2,6 +2,7 @@ import Pixi from '../Pixi/Pixi';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
+import { useNavigate } from 'react-router-dom';
 
 function Customization() {
   const [inputValue, setInputValue] = useState('');
@@ -43,7 +44,7 @@ function Customization() {
   const [thumnailDesign, setThumnailDesign] = useState('https://caseusshopify.enactstage.com/caseusapi/images/Teddy.svg');
 
   const [layoutColor, setLayoutColor] = useState([]);
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     localStorage.setItem('inputValue', inputValue);
@@ -424,6 +425,10 @@ function Customization() {
     }
   }
 
+  const navPhone = () => {
+    navigate('/phone');
+  };
+
 
   const appRef = useRef(null);
 
@@ -475,7 +480,8 @@ function Customization() {
               src="https://cdn-icons-png.flaticon.com/512/2734/2734822.png"
               alt="Close"
               className="cross-icon"
-              onClick={handleCompleteClick}
+              onClick={() => navPhone()}
+              // onClick={handleCompleteClick}
             />
           </h1>
 
@@ -589,7 +595,7 @@ function Customization() {
           </div>
 
 
-          <button className='complete' onClick={handleCompleteClick}>Complete</button>
+          <button className='complete' onClick={() => navPhone()}>Complete</button>
 
         </div>
       </div>
