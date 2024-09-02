@@ -12,8 +12,9 @@ import PhoneSelector from './components/PhoneSelector/PhoneSelector'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
-      <Route path='phone' element={<PhoneSelector/>} />
-      <Route path='custom' element={<Customization />} />
+       <Route index path='' element={<PhoneSelector />} />
+      <Route index path='phone' element={<PhoneSelector />} />
+      <Route path='custom/:id' element={<Customization />} />
     </Route>
   )
 )
@@ -21,6 +22,6 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-      <RouterProvider router={router} />
+    <RouterProvider router={router} />
   </React.StrictMode>,
 )

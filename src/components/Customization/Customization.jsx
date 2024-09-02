@@ -3,9 +3,12 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
 import { useNavigate } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 function Customization() {
-  const [inputValue, setInputValue] = useState('');
+  const [pixiState] = useState(JSON.parse(localStorage.getItem('pixiState')) || {});
+
+  const [inputValue, setInputValue] = useState(pixiState.inputValue || '');
 
   const [fontItems, setFontItems] = useState([]);
 
@@ -13,61 +16,64 @@ function Customization() {
 
   const [maskImg, setMaskImg] = useState('');
 
-  const [font, setFont] = useState('Peace Sans');
+  const [font, setFont] = useState(pixiState.font || 'Peace Sans');
 
   const [layoutItems, setLayoutItems] = useState([]);
 
-  const [layout, setLayout] = useState('layout1');
+  const [layout, setLayout] = useState(pixiState.layout || 'layout1');
 
-  const [colortext, setColorText] = useState('ffffff');
+  const [colortext, setColorText] = useState(pixiState.colortext || 'ffffff');
 
   const [styles, setStyles] = useState([]);
 
-  const [selectedStyle, setSelectedStyle] = useState('Simple');
+  const [selectedStyle, setSelectedStyle] = useState(pixiState.selectedStyle || 'Simple');
 
   const [designs, setDesigns] = useState([]);
 
   const [colors, setColors] = useState([]);
 
-  const [uLineColor, setULineColor] = useState([]);
+  const [uLineColor, setULineColor] = useState(pixiState.uLineColor || []);
 
-  const [boxDesignColor, setBoxDesignColor] = useState(null);
+  const [boxDesignColor, setBoxDesignColor] = useState(pixiState.boxDesignColor || null);
 
-  const [dotDesignColorId, setDotDesignColorId] = useState('Black');
+  const [dotDesignColorId, setDotDesignColorId] = useState(pixiState.dotDesignColorId || 'Black');
 
-  const [dotDesignColor, setDotDesignColor] = useState('white');
+  const [dotDesignColor, setDotDesignColor] = useState(pixiState.dotDesignColor || 'white');
 
   const [errorMessage, setErrorMessage] = useState('');
 
-  const [gradientDesign, setGradientDesign] = useState('');
+  const [gradientDesign, setGradientDesign] = useState(pixiState.gradientDesign || '');
 
-  const [thumnailDesign, setThumnailDesign] = useState('https://caseusshopify.enactstage.com/caseusapi/images/Teddy.svg');
+  const [thumnailDesign, setThumnailDesign] = useState(pixiState.thumnailDesign || 'https://caseusshopify.enactstage.com/caseusapi/images/Teddy.svg');
 
   const [layoutColor, setLayoutColor] = useState([]);
+
+  const [variantId, setVariantId] = useState('');
+  
+  const [productInfo, setProductInfo] = useState({});
+
+
   const navigate = useNavigate();
+  // const params = useParams();
+  const { id } = useParams(); // This will extract the product_id
+  const location = useLocation(); // This gives you access to the query parameters
 
   useEffect(() => {
-    localStorage.setItem('inputValue', inputValue);
-    localStorage.setItem('fontItems', JSON.stringify(fontItems));
-    localStorage.setItem('baseImg', baseImg);
-    localStorage.setItem('maskImg', maskImg);
-    localStorage.setItem('font', font);
-    localStorage.setItem('layoutItems', JSON.stringify(layoutItems));
-    localStorage.setItem('layout', layout);
-    localStorage.setItem('colortext', colortext);
-    localStorage.setItem('styles', JSON.stringify(styles));
-    localStorage.setItem('selectedStyle', selectedStyle);
-    localStorage.setItem('designs', JSON.stringify(designs));
-    localStorage.setItem('colors', JSON.stringify(colors));
-    localStorage.setItem('boxDesignColor', boxDesignColor);
-    localStorage.setItem('dotDesignColorId', dotDesignColorId);
-    localStorage.setItem('dotDesignColor', dotDesignColor);
-    localStorage.setItem('gradientDesign', gradientDesign);
-    localStorage.setItem('thumnailDesign', thumnailDesign);
-    localStorage.setItem('layoutColor', JSON.stringify(layoutColor));
-    localStorage.setItem('errorMessage', errorMessage);
+    localStorage.setItem('pixiState', JSON.stringify({
+      inputValue: inputValue,
+      font: font,
+      layout: layout,
+      colortext: colortext,
+      selectedStyle: selectedStyle,
+      boxDesignColor: boxDesignColor,
+      dotDesignColorId: dotDesignColorId,
+      dotDesignColor: dotDesignColor,
+      gradientDesign: gradientDesign,
+      thumnailDesign: thumnailDesign,
+      uLineColor: uLineColor
+    }));
 
-  }, [inputValue,fontItems,baseImg,maskImg,font,layoutItems,layout,colortext,styles, selectedStyle,designs,colors,boxDesignColor,dotDesignColorId,dotDesignColor,gradientDesign,thumnailDesign,layoutColor,errorMessage]);
+  }, [inputValue, fontItems, baseImg, maskImg, font, layoutItems, layout, colortext, styles, selectedStyle, designs, colors, boxDesignColor, dotDesignColorId, dotDesignColor, gradientDesign, thumnailDesign, layoutColor, errorMessage]);
   // console.log('layoutvalue1111222-----------', layout);
   const handleInputChange = (event) => {
     let value = event.target.value;
@@ -165,55 +171,6 @@ function Customization() {
     };
 
     setDesigns(design);
-
-
-    // const fontItems = {
-    //   'Simple': [
-    //     { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
-    //     { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
-    //     { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
-    //     { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
-    //     { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
-    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-    //   ],
-    //   'Box': [
-    //     { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
-    //     { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
-    //     { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
-    //     { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
-    //     { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
-    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-    //   ],
-    //   'Dot': [
-    //     { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
-    //     { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
-    //     { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
-    //     { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
-    //     { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
-    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-    //   ],
-    //   'Stroke': [
-    //     { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
-    //     { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
-    //     { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
-    //     { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
-    //     { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
-    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-    //   ],
-    //   'Gradient': [
-    //     { id: "Arial", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/35d0b2830b4f8c6a232ca527b27d529a.svg", font: 'Peace Sans' },
-    //     { id: "Impact", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/b6921243aa49c66eee5a4a1cdb35af9b.svg", font: 'Buenos Aires' },
-    //     { id: "font3", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/8e14df29e1e72fea5c396f88da5f09bf.svg", font: 'Guyon Gazebo' },
-    //     { id: "Brush Script MT", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/7e7ee0a8d93a62cfe8100517097b45d9.svg", font: 'Quentin' },
-    //     { id: "Bradley Hand", imageUrl: "https://cdn.casetify.com/static/cms/image/30176/Screenshot_2022-05-19_at_6.46.28_PM.png", font: 'Hyogo' },
-    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-    //   ],
-    //   'Thumnail': [
-    //     { id: "Y2k Fill", imageUrl: "https://ctgimage1.s3.amazonaws.com/cms/image/3ed54a22c0d80dc6d07b6d9d06e8b27e.svg", font: 'Y2k Fill' }
-    //   ]
-    // };
-
-    // setFontItems(fontItems);
 
     const layoutItems = {
       'Simple': [
@@ -357,34 +314,68 @@ function Customization() {
     setColors(colorItems);
   }, []);
 
-  if (layout in layoutColor) {
-    console.log('layoutcolor exists:', layoutColor[layout]);
-  } else {
-    console.log('layoutcolor does not exist');
-  }
+  // if (layout in layoutColor) {
+  // } else {
+  // }
 
+
+  // useEffect(() => {
+  //   // const product_id = document.querySelector('input[name="product-id"]') ? document.querySelector('input[name="product-id"]').value : null;
+  //   // // console.log('Product ID:', product_id); // Debugging log
+  //   // const product_id = 8230530842822
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapiproduct/data`, {
+  //         params: { id: params?.id }
+  //       });
+  //       const data = response.data.data;
+  //       if (data) {
+  //         setBaseImg(data.product_base_img); // Adjust based on your data structure
+  //         setMaskImg(data.product_mask_img); // Adjust based on your data structure
+  //         localStorage.setItem('product_width', data.product_width);
+  //         localStorage.setItem('product_height', data.product_height);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching product data:', error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
   useEffect(() => {
-    // const product_id = document.querySelector('input[name="product-id"]') ? document.querySelector('input[name="product-id"]').value : null;
-    // // console.log('Product ID:', product_id); // Debugging log
-    const product_id = 8230530842822
+    // Extract the variant_id from the query string
+    const searchParams = new URLSearchParams(location.search);
+    const variant_id = searchParams.get('variant');
+    setVariantId(variant_id);
+
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8006/product/data`, {
-          params: { id: product_id }
-        });
+        // Define the params object
+        const params = { id: id }; // Use product_id from useParams
+
+        // Add variant_id if it exists
+        if (variant_id) {
+          params.variant_id = variant_id;
+        }
+
+        // Fetch data with the appropriate params
+        const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapi/product/data`, { params });
         const data = response.data.data;
+
         if (data) {
-          setBaseImg(data.product_base_img); // Adjust based on your data structure
-          setMaskImg(data.product_mask_img); // Adjust based on your data structure
-          localStorage.setItem('product_width', data.product_width);
-          localStorage.setItem('product_height', data.product_height);
+          setBaseImg(data.product_base_img);
+          setMaskImg(data.product_mask_img);
+          localStorage.setItem('product_width', data.product_width);  // Save width to localStorage
+          localStorage.setItem('product_height', data.product_height);  // Save height to localStorage
         }
       } catch (error) {
         console.error('Error fetching product data:', error);
       }
     };
+
+    // Fetch data when component mounts
     fetchData();
-  }, []);
+  }, [id, location.search]);
+
 
   const handleStyleChange = (item) => {
     setSelectedStyle(item.id);
@@ -455,10 +446,8 @@ function Customization() {
         imgElement.src = base64;
         imgElement.removeAttribute('srcset');
       } else {
-        console.log('Image element not found.');
       }
     } else {
-      console.log('No base64 image found in localStorage.');
     }
   };
   const displayValue = font === 'Peace Sans' ? inputValue.toLowerCase() : inputValue.toUpperCase();
@@ -468,7 +457,20 @@ function Customization() {
     <>
       <div className='main'>
         <div className="left-container">
-          <Pixi selectedStyle={selectedStyle} uLineColor={uLineColor} boxDesignColor={boxDesignColor} dotDesignColorId={dotDesignColorId} dotDesignColor={dotDesignColor} thumnailDesign={thumnailDesign} inputValue={inputValue} colortext={colortext} font={font} baseImg={baseImg} maskImg={maskImg} onExtractImage={handleExtractImage} layout={layout} gradient={gradientDesign} />
+          <Pixi selectedStyle={selectedStyle}
+            uLineColor={uLineColor}
+            boxDesignColor={boxDesignColor}
+            dotDesignColorId={dotDesignColorId}
+            dotDesignColor={dotDesignColor}
+            thumnailDesign={thumnailDesign}
+            inputValue={inputValue}
+            colortext={colortext}
+            font={font}
+            baseImg={baseImg}
+            maskImg={maskImg}
+            onExtractImage={handleExtractImage}
+            layout={layout}
+            gradient={gradientDesign} />
 
           <div id="myCanvas"></div>
         </div>
@@ -481,7 +483,7 @@ function Customization() {
               alt="Close"
               className="cross-icon"
               onClick={() => navPhone()}
-              // onClick={handleCompleteClick}
+            // onClick={handleCompleteClick}
             />
           </h1>
 

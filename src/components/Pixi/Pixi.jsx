@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as PIXI from 'pixi.js';
 import designs from './designs.js';
+import { log } from 'react-modal/lib/helpers/ariaAppHider.js';
 
 
 const Pixi = ({
@@ -25,12 +26,9 @@ const Pixi = ({
 
   // State to store base64 image data
   const [base64Image, setBase64Image] = useState('');
-  console.log('layout-------', layout);
-  console.log('inputValue', inputValue);
 
   useEffect(() => {
     if (baseImg && maskImg) {
-      console.log('Initializing PIXI application');
 
       const app = new PIXI.Application({
         backgroundColor: 0xffffff,
@@ -55,15 +53,10 @@ const Pixi = ({
         const maskImage = new PIXI.Sprite(resources.mask.texture);
         baseImage.anchor.set(0.5);
         baseImage.x = app.screen.width / 2;
-        console.log('baseImageX height', baseImage.x)
         baseImage.y = app.screen.height / 2;
-        console.log('baseImageY height', baseImage.y)
-
         maskImage.anchor.set(0.5);
         maskImage.x = app.screen.width / 2;
-        console.log('maskImageX height', maskImage.x)
         maskImage.y = app.screen.height / 2;
-        console.log('maskImageY height', maskImage.y)
         maskImageRef.current = maskImage;
 
         app.stage.addChild(baseImage);
@@ -303,8 +296,11 @@ const Pixi = ({
       textStyleConfig.fontSize = 15;
       layout = 'layout2';
     }
-    console.log('maskImage.texture.width', maskImage.texture.width);
-    console.log('maskImage.texture.height', maskImage.texture.height)
+
+    if (!maskImage.texture) {
+      return;
+    }
+
     const filter = new PIXI.Filter(null, designString, {
       uResolution: [maskImage.texture.width, maskImage.texture.height],
       uLineColor: uLineColor,
@@ -703,7 +699,7 @@ const Pixi = ({
 
       // Create and apply the filter
       const filter = new PIXI.Filter(null, designString, {
-        uResolution: [maskImage.texture.width, maskImage.texture.height],
+        uResolution: [maskImage.texture.width , maskImage.texture.height],
         uLineColor: [1.0, 1.0, 0.0, 1.0], // Example: Yellow color for the line (RGBA)
       });
 
