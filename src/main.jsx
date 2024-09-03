@@ -1,27 +1,24 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import './index.css'
-import App from './App'
-import Layout from './Layout'
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
+import React, { lazy, Suspense } from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Customization from './components/Customization/Customization'
-import PhoneSelector from './components/PhoneSelector/PhoneSelector'
-
-
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path='/' element={<App />}>
-       <Route index path='' element={<PhoneSelector />} />
-      <Route index path='phone' element={<PhoneSelector />} />
-      <Route path='custom/:id' element={<Customization />} />
-    </Route>
-  )
-)
-
+const Customization = lazy(() => import('./components/Customization/Customization'));
+const PhoneSelector = lazy(() => import('./components/PhoneSelector/PhoneSelector'));
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>,
-)
+    <Router>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path='/' element={<App />}>
+            <Route index element={<PhoneSelector />} />
+            <Route path='phone' element={<PhoneSelector />} />
+            <Route path='custom/:id' element={<Customization />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </Router>
+  </React.StrictMode>
+);

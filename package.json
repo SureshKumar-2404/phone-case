@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "dev1": "webpack --config webpack.dev.js --progress --color",
+    "dev1": "webpack  --config webpack.dev.js --progress --color",
     "build1": "webpack --config webpack.prod.js --progress --color"
   },
   "dependencies": {

@@ -2,7 +2,7 @@ import Pixi from '../Pixi/Pixi';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { useParams, useLocation } from 'react-router-dom';
 
 function Customization() {
@@ -53,10 +53,10 @@ function Customization() {
   const [productInfo, setProductInfo] = useState({});
 
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   // const params = useParams();
   const { id } = useParams(); // This will extract the product_id
-  const location = useLocation(); // This gives you access to the query parameters
+  // const location = useLocation(); // This gives you access to the query parameters
 
   useEffect(() => {
     localStorage.setItem('pixiState', JSON.stringify({
@@ -343,6 +343,7 @@ function Customization() {
   // }, []);
   useEffect(() => {
     // Extract the variant_id from the query string
+    const product_id = 8230524256454
     const searchParams = new URLSearchParams(location.search);
     const variant_id = searchParams.get('variant');
     setVariantId(variant_id);
@@ -350,7 +351,7 @@ function Customization() {
     const fetchData = async () => {
       try {
         // Define the params object
-        const params = { id: id }; // Use product_id from useParams
+        const params = { id: product_id }; // Use product_id from useParams
 
         // Add variant_id if it exists
         if (variant_id) {

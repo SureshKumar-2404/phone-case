@@ -2,11 +2,11 @@ import Pixi from '../Pixi/Pixi';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './PhoneSelector.css';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 
 const PhoneSelector = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(localStorage.getItem('selectedCompany') || '');
   const [devices, setDevices] = useState(JSON.parse(localStorage.getItem('devices')) || []);
@@ -105,14 +105,14 @@ const PhoneSelector = () => {
 
   const hasValidVariants = filteredVariants.length > 0;
 
-  const navCustome = () => {
-    let url = `/custom/${selectedDevice}`;
+  // const navCustome = () => {
+  //   let url = `/custom/${selectedDevice}`;
 
-    if (variantId) {
-      url += `?variant=${variantId}`;
-    }
-    navigate(url);
-  };
+  //   if (variantId) {
+  //     url += `?variant=${variantId}`;
+  //   }
+  //   navigate(url);
+  // };
   return (
     <div>
       <div>
@@ -139,7 +139,7 @@ const PhoneSelector = () => {
         </select>
       </div>
 
-      <button onClick={() => navCustome(selectedDevice)}>Customization</button>
+      {/* <button onClick={() => navCustome(selectedDevice)}>Customization</button> */}
 
       {productInfo.title && pixiMaskImg && (
         <div>
