@@ -417,9 +417,9 @@ function Customization() {
     }
   }
 
-  const navPhone = () => {
-    navigate('/phone');
-  };
+  // const navPhone = () => {
+  //   navigate('/phone');
+  // };
 
 
   const appRef = useRef(null);
@@ -483,7 +483,6 @@ function Customization() {
               src="https://cdn-icons-png.flaticon.com/512/2734/2734822.png"
               alt="Close"
               className="cross-icon"
-              onClick={() => navPhone()}
             // onClick={handleCompleteClick}
             />
           </h1>
@@ -598,7 +597,7 @@ function Customization() {
           </div>
 
 
-          <button className='complete' onClick={() => navPhone()}>Complete</button>
+          <button className='complete'>Complete</button>
 
         </div>
       </div>

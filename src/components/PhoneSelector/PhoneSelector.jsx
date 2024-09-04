@@ -12,7 +12,7 @@ const PhoneSelector = () => {
   const [devices, setDevices] = useState(JSON.parse(localStorage.getItem('devices')) || []);
   const [selectedDevice, setSelectedDevice] = useState(localStorage.getItem('selectedDevice') || '');
   const [productInfo, setProductInfo] = useState(JSON.parse(localStorage.getItem('productInfo')) || {});
-  const [pixiState] = useState(JSON.parse(localStorage.getItem('pixiState')) || {});
+  const [pixiState, setPixiState] = useState(JSON.parse(localStorage.getItem('pixiState')) || {});
   const [pixiMaskImg, setPixiMaskImg] = useState('');
   const [variantId, setVariantId] = useState('');
   const [variantBaseImg, setVariantBaseImg] = useState('');
@@ -27,7 +27,6 @@ const PhoneSelector = () => {
         console.error('Error fetching companies:', error);
       }
     };
-
     fetchCompanies();
 
     // Fetch devices if company is already selected
@@ -113,6 +112,9 @@ const PhoneSelector = () => {
   //   }
   //   navigate(url);
   // };
+  const handleReload = () => {
+    setPixiState(JSON.parse(localStorage.getItem('pixiState')) || {});
+  }
   return (
     <div>
       <div>
@@ -138,8 +140,8 @@ const PhoneSelector = () => {
           ))}
         </select>
       </div>
-
-      {/* <button onClick={() => navCustome(selectedDevice)}>Customization</button> */}
+      <button id='reload' onClick={handleReload}>Reload</button>
+      <button id='customization'>Customization</button>
 
       {productInfo.title && pixiMaskImg && (
         <div>
