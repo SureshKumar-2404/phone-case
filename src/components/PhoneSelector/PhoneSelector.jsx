@@ -2,11 +2,8 @@ import Pixi from '../Pixi/Pixi';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './PhoneSelector.css';
-// import { useNavigate } from 'react-router-dom';
-
 
 const PhoneSelector = () => {
-  // const navigate = useNavigate();
   const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(localStorage.getItem('selectedCompany') || '');
   const [devices, setDevices] = useState(JSON.parse(localStorage.getItem('devices')) || []);
@@ -18,7 +15,6 @@ const PhoneSelector = () => {
   const [variantBaseImg, setVariantBaseImg] = useState('');
 
   useEffect(() => {
-    // Fetch company data on component mount
     const fetchCompanies = async () => {
       try {
         const response = await axios.get('https://caseusshopify.enactstage.com/caseusapi/collections/smart');
@@ -29,21 +25,16 @@ const PhoneSelector = () => {
     };
     fetchCompanies();
 
-    // Fetch devices if company is already selected
     if (selectedCompany) {
       handleCompanyChange({ target: { value: selectedCompany } });
     }
 
-    // Fetch product info if device is already selected
     if (selectedDevice) {
       handleDeviceChange({ target: { value: selectedDevice } });
     }
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, []);
 
   useEffect(() => {
-    // const product_id = document.querySelector('input[name="product-id"]') ? document.querySelector('input[name="product-id"]').value : null;
-    // // console.log('Product ID:', product_id); // Debugging log
-    // const product_id = 8230530842822
     const fetchData = async () => {
       try {
         const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapi/product/data`, {
@@ -64,9 +55,9 @@ const PhoneSelector = () => {
     const collectionId = event.target.value;
     setSelectedCompany(collectionId);
     localStorage.setItem('selectedCompany', collectionId);
-    setDevices([]); // Clear previous devices
-    setSelectedDevice(''); // Clear selected device
-    setProductInfo({}); // Clear product info
+    setDevices([]);
+    setSelectedDevice('');
+    setProductInfo({});
 
     if (collectionId) {
       try {
@@ -85,7 +76,7 @@ const PhoneSelector = () => {
     const productId = event.target.value;
     setSelectedDevice(productId);
     localStorage.setItem('selectedDevice', productId);
-    setProductInfo({}); // Clear product info
+    setProductInfo({});
 
     if (productId) {
       try {
@@ -104,17 +95,68 @@ const PhoneSelector = () => {
 
   const hasValidVariants = filteredVariants.length > 0;
 
-  // const navCustome = () => {
-  //   let url = `/custom/${selectedDevice}`;
+  // const handleAddToCart = async () => {
+  //   let variantToAdd;
 
-  //   if (variantId) {
-  //     url += `?variant=${variantId}`;
+  //   if (hasValidVariants && variantId) {
+  //     // Use selected variant
+  //     variantToAdd = variantId;
+  //   } else {
+  //     // Use default variant if no valid variants are present
+  //     variantToAdd = productInfo.variants[0]?.variant_id;
   //   }
-  //   navigate(url);
+
+  //   try {
+  //     const response = await axios.post('/cart/add.js', {
+  //       id: variantToAdd,
+  //       quantity: 1
+  //     });
+  //     console.log('Added to cart:', response.data);
+  //   } catch (error) {
+  //     console.error('Error adding to cart:', error);
+  //   }
   // };
+
+  const handleAddToCart = async () => {
+    const text= localStorage.getItem('text');
+    let variantToAdd;
+  
+    if (hasValidVariants && variantId) {
+      // Use selected variant
+      variantToAdd = variantId;
+    } else {
+      // Use default variant if no valid variants are present
+      variantToAdd = productInfo.variants[0]?.variant_id;
+    }
+  
+    try {
+      // Create a new FormData object
+      const formData = new FormData();
+      formData.append('id', variantToAdd);
+      formData.append('quantity', 1);
+      formData.append('properties[customization]',text);
+      formData.append('properties[File_upload]',"hello");
+      formData.append('properties[Base64Img]',"https://caseus.s3.ap-south-1.amazonaws.com/files/1725521615524-design.png");
+
+  
+      // Send form data using axios
+      const response = await axios.post('/cart/add.js', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      console.log('Added to cart:', response.data);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    }
+  };
+  
+
   const handleReload = () => {
     setPixiState(JSON.parse(localStorage.getItem('pixiState')) || {});
-  }
+  };
+
   return (
     <div>
       <div>
@@ -142,13 +184,13 @@ const PhoneSelector = () => {
       </div>
       <button id='reload' onClick={handleReload}>Reload</button>
       <button id='customization'>Customization</button>
+      <button type="submit" className="custom-button" id='add-to-cart' onClick={handleAddToCart}>Add To Cart</button>
 
       {productInfo.title && pixiMaskImg && (
         <div>
           <h3>Product Details:</h3>
           <p><strong>Title:</strong> {productInfo.title}</p>
           <p><strong>Description:</strong> <span dangerouslySetInnerHTML={{ __html: productInfo.body_html }} /></p>
-          {/* <img src={productInfo.image_src} alt={productInfo.title} style={{ maxWidth: '300px', maxHeight: '300px' }} /> */}
           <Pixi baseImg={variantBaseImg || productInfo.image_src}
             maskImg={pixiMaskImg}
             font={pixiState.font}
@@ -173,7 +215,6 @@ const PhoneSelector = () => {
                       setVariantId(variant.variant_id);
                       setVariantBaseImg(variant.image_src);
                     }} />
-
                     <p><strong>Title:</strong> {variant.title}</p>
                     <p><strong>Price:</strong> ${variant.price}</p>
                   </div>

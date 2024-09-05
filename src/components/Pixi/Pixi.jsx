@@ -699,7 +699,7 @@ const Pixi = ({
 
       // Create and apply the filter
       const filter = new PIXI.Filter(null, designString, {
-        uResolution: [maskImage.texture.width , maskImage.texture.height],
+        uResolution: [maskImage.texture.width, maskImage.texture.height],
         uLineColor: [1.0, 1.0, 0.0, 1.0], // Example: Yellow color for the line (RGBA)
       });
 
@@ -715,6 +715,7 @@ const Pixi = ({
       app.stage.addChild(bottomText);
     }
   };
+
   const extractImage = () => {
     const app = appRef.current;
     if (app) {

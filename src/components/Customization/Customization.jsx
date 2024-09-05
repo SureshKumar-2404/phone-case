@@ -49,7 +49,7 @@ function Customization() {
   const [layoutColor, setLayoutColor] = useState([]);
 
   const [variantId, setVariantId] = useState('');
-  
+
   const [productInfo, setProductInfo] = useState({});
 
 
@@ -430,6 +430,8 @@ function Customization() {
   };
 
   const handleCompleteClick = () => {
+    alert('hello');
+    console.log("helllo---------------------");
     if (appRef.current) {
       appRef.current();
     }
@@ -441,6 +443,7 @@ function Customization() {
     }
 
     var base64 = localStorage.getItem('base64');
+    console.log('base64------', base64);
     if (base64) {
       var imgElement = document.querySelector('#product-base-img img');
       if (imgElement) {
@@ -483,7 +486,7 @@ function Customization() {
               src="https://cdn-icons-png.flaticon.com/512/2734/2734822.png"
               alt="Close"
               className="cross-icon"
-            // onClick={handleCompleteClick}
+              onClick={handleCompleteClick}
             />
           </h1>
 
@@ -597,7 +600,7 @@ function Customization() {
           </div>
 
 
-          <button className='complete'>Complete</button>
+          <button className='complete' onClick={handleCompleteClick}>Complete</button>
 
         </div>
       </div>
