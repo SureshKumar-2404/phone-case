@@ -1,5 +1,5 @@
 import Pixi from '../Pixi/Pixi';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './PhoneSelector.css';
 
@@ -13,6 +13,36 @@ const PhoneSelector = () => {
   const [pixiMaskImg, setPixiMaskImg] = useState('');
   const [variantId, setVariantId] = useState('');
   const [variantBaseImg, setVariantBaseImg] = useState('');
+
+  const appRef = useRef(null);
+
+  const handleExtractImage = (extractImage) => {
+    // Attach extractImage function to a ref or state to use it later
+    appRef.current = extractImage;
+  };
+
+  const handleCompleteClick = () => {
+    if (appRef.current) {
+      appRef.current();
+    }
+
+    var customizationValue = localStorage.getItem('text');
+
+    if (customizationValue) {
+      document.getElementById('customization').value = customizationValue;
+    }
+
+    var base64 = localStorage.getItem('base64');
+    if (base64) {
+      var imgElement = document.querySelector('#product-base-img img');
+      if (imgElement) {
+        imgElement.src = base64;
+        imgElement.removeAttribute('srcset');
+      } else {
+      }
+    } else {
+    }
+  };
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -95,32 +125,10 @@ const PhoneSelector = () => {
 
   const hasValidVariants = filteredVariants.length > 0;
 
-  // const handleAddToCart = async () => {
-  //   let variantToAdd;
-
-  //   if (hasValidVariants && variantId) {
-  //     // Use selected variant
-  //     variantToAdd = variantId;
-  //   } else {
-  //     // Use default variant if no valid variants are present
-  //     variantToAdd = productInfo.variants[0]?.variant_id;
-  //   }
-
-  //   try {
-  //     const response = await axios.post('/cart/add.js', {
-  //       id: variantToAdd,
-  //       quantity: 1
-  //     });
-  //     console.log('Added to cart:', response.data);
-  //   } catch (error) {
-  //     console.error('Error adding to cart:', error);
-  //   }
-  // };
-
   const handleAddToCart = async () => {
-    const text= localStorage.getItem('text');
+    const text = localStorage.getItem('text');
     let variantToAdd;
-  
+
     if (hasValidVariants && variantId) {
       // Use selected variant
       variantToAdd = variantId;
@@ -128,103 +136,185 @@ const PhoneSelector = () => {
       // Use default variant if no valid variants are present
       variantToAdd = productInfo.variants[0]?.variant_id;
     }
-  
+
     try {
       // Create a new FormData object
       const formData = new FormData();
       formData.append('id', variantToAdd);
       formData.append('quantity', 1);
-      formData.append('properties[customization]',text);
-      formData.append('properties[File_upload]',"hello");
-      formData.append('properties[Base64Img]',"https://caseus.s3.ap-south-1.amazonaws.com/files/1725521615524-design.png");
+      formData.append('properties[customization]', text);
+      formData.append('properties[Base64Img]', "https://caseus.s3.ap-south-1.amazonaws.com/files/1725521615524-design.png");
 
-  
+
       // Send form data using axios
       const response = await axios.post('/cart/add.js', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-  
+
       console.log('Added to cart:', response.data);
     } catch (error) {
       console.error('Error adding to cart:', error);
     }
   };
-  
+
 
   const handleReload = () => {
     setPixiState(JSON.parse(localStorage.getItem('pixiState')) || {});
   };
 
   return (
-    <div>
-      <div>
-        <label>Select Company:</label>
-        <select value={selectedCompany} onChange={handleCompanyChange}>
-          <option value="">Select Company</option>
-          {companies.map((company) => (
-            <option key={company.id} value={company.id}>
-              {company.title}
-            </option>
-          ))}
-        </select>
-      </div>
+    <>
+      <div class="container">
+        <main class="caseus">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="image-left">
 
-      <div>
-        <label>Select Device:</label>
-        <select value={selectedDevice} onChange={handleDeviceChange} disabled={!devices.length}>
-          <option value="">Select Device</option>
-          {devices.map((device) => (
-            <option key={device.product_id} value={device.product_id}>
-              {device.title}
-            </option>
-          ))}
-        </select>
-      </div>
-      <button id='reload' onClick={handleReload}>Reload</button>
-      <button id='customization'>Customization</button>
-      <button type="submit" className="custom-button" id='add-to-cart' onClick={handleAddToCart}>Add To Cart</button>
-
-      {productInfo.title && pixiMaskImg && (
-        <div>
-          <h3>Product Details:</h3>
-          <p><strong>Title:</strong> {productInfo.title}</p>
-          <p><strong>Description:</strong> <span dangerouslySetInnerHTML={{ __html: productInfo.body_html }} /></p>
-          <Pixi baseImg={variantBaseImg || productInfo.image_src}
-            maskImg={pixiMaskImg}
-            font={pixiState.font}
-            layout={pixiState.layout}
-            colortext={pixiState.colortext}
-            selectedStyle={pixiState.selectedStyle || 'Simple'}
-            boxDesignColor={pixiState.boxDesignColor}
-            dotDesignColorId={pixiState.dotDesignColorId}
-            dotDesignColor={pixiState.dotDesignColor}
-            gradientDesign={pixiState.gradientDesign}
-            thumnailDesign={pixiState.thumnailDesign}
-            uLineColor={pixiState.uLineColor}
-            inputValue={pixiState.inputValue || ''} />
-
-          {hasValidVariants && (
-            <div>
-              <h4>Product Variants:</h4>
-              <div className="variants-container">
-                {filteredVariants.map((variant) => (
-                  <div key={variant.variant_id} className="variant-item">
-                    <img src={variant.image_src || 'placeholder-image-url'} alt={variant.title} style={{ maxWidth: '100px', maxHeight: '100px' }} onClick={() => {
-                      setVariantId(variant.variant_id);
-                      setVariantBaseImg(variant.image_src);
-                    }} />
-                    <p><strong>Title:</strong> {variant.title}</p>
-                    <p><strong>Price:</strong> ${variant.price}</p>
+                {pixiMaskImg && (
+                  <div>
+                    <Pixi baseImg={variantBaseImg || productInfo.image_src}
+                      maskImg={pixiMaskImg}
+                      font={pixiState.font}
+                      layout={pixiState.layout}
+                      colortext={pixiState.colortext}
+                      selectedStyle={pixiState.selectedStyle || 'Simple'}
+                      boxDesignColor={pixiState.boxDesignColor}
+                      dotDesignColorId={pixiState.dotDesignColorId}
+                      dotDesignColor={pixiState.dotDesignColor}
+                      gradientDesign={pixiState.gradientDesign}
+                      thumnailDesign={pixiState.thumnailDesign}
+                      uLineColor={pixiState.uLineColor}
+                      inputValue={pixiState.inputValue || ''}
+                      onExtractImage={handleExtractImage}
+                    />
                   </div>
-                ))}
+                )}
               </div>
             </div>
-          )}
-        </div>
-      )}
-    </div>
+            <div class="col-sm-6">
+              <div class="right">
+                <h1>{productInfo.title}</h1>
+                <div class="payment-section">
+                  <h3>$42 USD</h3>
+                  <h4><del>$60 USD</del></h4>
+                  <button class="free-shipping">
+                    Free Shipping
+                  </button>
+                </div>
+
+                <form action="">
+                  <div class="form-group">
+                    <label for="first-select">Select Brand:</label>
+                    <select value={selectedCompany} onChange={handleCompanyChange}>
+                      <option value="">Apple</option>
+                      {companies.map((company) => (
+                        <option key={company.id} value={company.id}>
+                          {company.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="second-select">Select Device:</label>
+                    <select value={selectedDevice} onChange={handleDeviceChange} disabled={!devices.length}>
+                      <option value="">Select Device</option>
+                      {devices.map((device) => (
+                        <option key={device.product_id} value={device.product_id}>
+                          {device.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* <div class="form-group">
+                    <label for="">Select Case Type</label>
+                    <div class="select-protector">
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <div class="mobile-protector">
+                            <div class="protector-image">
+                              <img src="images/mobile-protector.PNG" alt="protector" />
+                            </div>
+                            <div class="protector-content">
+                              <h5>Ultra Bounce Case...</h5>
+                              <button class="protector-price">$100 USD</button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="mobile-protector">
+                            <div class="protector-image">
+                              <img src="images/mobile-protector.PNG" alt="protector" />
+                            </div>
+                            <div class="protector-content">
+                              <h5>Ultra Bounce Case...</h5>
+                              <button class="protector-price">$100 USD</button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="mobile-protector">
+                            <div class="protector-image">
+                              <img src="images/mobile-protector.PNG" alt="protector" />
+                            </div>
+                            <div class="protector-content">
+                              <h5>Ultra Bounce Case...</h5>
+                              <button class="protector-price">$100 USD</button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="mobile-protector">
+                            <div class="protector-image">
+                              <img src="images/mobile-protector.PNG" alt="protector" />
+                            </div>
+                            <div class="protector-content">
+                              <h5>Ultra Bounce Case...</h5>
+                              <button class="protector-price">$100 USD</button>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div> */}
+                  <div className="form-group">
+                    <label>Select Case Type</label>
+                    <div className="select-protector">
+                      <div className="row">
+                        {filteredVariants.map((variant, index) => (
+                          <div className="col-sm-3" key={variant.variant_id}>
+                            <div className="mobile-protector">
+                              <div className="protector-image">
+                                <img
+                                  src={variant.image_src || "images/mobile-protector.PNG"}
+                                  alt={variant.title}
+                                />
+                              </div>
+                              <div className="protector-content">
+                                <h5>{variant.title || "Ultra Bounce Case..."}</h5>
+                                <button className="protector-price">
+                                  ${variant.price || 100} USD
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <button id='reload' onClick={handleReload}>Reload</button>
+                  <button id='customization' class="customize"> Customize</button>
+                  <button type="submit" class="custom-button add-card" id='add-to-cart1' onClick={handleAddToCart}>Add To Cart</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </>
   );
 };
 

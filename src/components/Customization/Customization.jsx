@@ -314,33 +314,6 @@ function Customization() {
     setColors(colorItems);
   }, []);
 
-  // if (layout in layoutColor) {
-  // } else {
-  // }
-
-
-  // useEffect(() => {
-  //   // const product_id = document.querySelector('input[name="product-id"]') ? document.querySelector('input[name="product-id"]').value : null;
-  //   // // console.log('Product ID:', product_id); // Debugging log
-  //   // const product_id = 8230530842822
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapiproduct/data`, {
-  //         params: { id: params?.id }
-  //       });
-  //       const data = response.data.data;
-  //       if (data) {
-  //         setBaseImg(data.product_base_img); // Adjust based on your data structure
-  //         setMaskImg(data.product_mask_img); // Adjust based on your data structure
-  //         localStorage.setItem('product_width', data.product_width);
-  //         localStorage.setItem('product_height', data.product_height);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching product data:', error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
   useEffect(() => {
     // Extract the variant_id from the query string
     const product_id = 8230524256454
@@ -417,10 +390,6 @@ function Customization() {
     }
   }
 
-  // const navPhone = () => {
-  //   navigate('/phone');
-  // };
-
 
   const appRef = useRef(null);
 
@@ -430,8 +399,6 @@ function Customization() {
   };
 
   const handleCompleteClick = () => {
-    alert('hello');
-    console.log("helllo---------------------");
     if (appRef.current) {
       appRef.current();
     }

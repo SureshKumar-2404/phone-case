@@ -82,7 +82,7 @@ const Pixi = ({
         app.destroy(true, { children: true, texture: true, baseTexture: true });
       };
     }
-  }, [baseImg, maskImg, thumnailDesign]);
+  }, [baseImg, maskImg, thumnailDesign,onExtractImage]);
 
   useEffect(() => {
     if (appRef.current && maskImageRef.current) {
