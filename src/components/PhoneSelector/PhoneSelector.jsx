@@ -126,6 +126,7 @@ const PhoneSelector = () => {
   const hasValidVariants = filteredVariants.length > 0;
 
   const handleAddToCart = async () => {
+    alert('hello');
     const text = localStorage.getItem('text');
     let variantToAdd;
 
@@ -145,19 +146,19 @@ const PhoneSelector = () => {
       formData.append('properties[customization]', text);
       formData.append('properties[Base64Img]', "https://caseus.s3.ap-south-1.amazonaws.com/files/1725521615524-design.png");
 
-
-      // Send form data using axios
+      // Wait for 3 seconds before proceeding
+      // Send form data using axios after 3-second delay
       const response = await axios.post('/cart/add.js', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
       console.log('Added to cart:', response.data);
     } catch (error) {
       console.error('Error adding to cart:', error);
     }
   };
+
 
 
   const handleReload = () => {
@@ -166,12 +167,11 @@ const PhoneSelector = () => {
 
   return (
     <>
-      <div class="container">
-        <main class="caseus">
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="image-left">
-
+      <div className="container">
+        <main className="caseus">
+          <div className="row">
+            <div className="col-sm-6">
+              <div className="image-left">  
                 {pixiMaskImg && (
                   <div>
                     <Pixi baseImg={variantBaseImg || productInfo.image_src}
@@ -187,26 +187,25 @@ const PhoneSelector = () => {
                       thumnailDesign={pixiState.thumnailDesign}
                       uLineColor={pixiState.uLineColor}
                       inputValue={pixiState.inputValue || ''}
-                      onExtractImage={handleExtractImage}
                     />
                   </div>
                 )}
               </div>
             </div>
-            <div class="col-sm-6">
-              <div class="right">
+            <div className="col-sm-6">
+              <div className="right">
                 <h1>{productInfo.title}</h1>
-                <div class="payment-section">
+                <div className="payment-section">
                   <h3>$42 USD</h3>
                   <h4><del>$60 USD</del></h4>
-                  <button class="free-shipping">
+                  <button className="free-shipping">
                     Free Shipping
                   </button>
                 </div>
 
                 <form action="">
-                  <div class="form-group">
-                    <label for="first-select">Select Brand:</label>
+                  <div className="form-group">
+                    <label htmlFor="first-select">Select Brand:</label>
                     <select value={selectedCompany} onChange={handleCompanyChange}>
                       <option value="">Apple</option>
                       {companies.map((company) => (
@@ -216,8 +215,8 @@ const PhoneSelector = () => {
                       ))}
                     </select>
                   </div>
-                  <div class="form-group">
-                    <label for="second-select">Select Device:</label>
+                  <div className="form-group">
+                    <label htmlFor="second-select">Select Device:</label>
                     <select value={selectedDevice} onChange={handleDeviceChange} disabled={!devices.length}>
                       <option value="">Select Device</option>
                       {devices.map((device) => (
@@ -228,51 +227,51 @@ const PhoneSelector = () => {
                     </select>
                   </div>
 
-                  {/* <div class="form-group">
+                  {/* <div className="form-group">
                     <label for="">Select Case Type</label>
-                    <div class="select-protector">
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <div class="mobile-protector">
-                            <div class="protector-image">
+                    <div className="select-protector">
+                      <div className="row">
+                        <div className="col-sm-3">
+                          <div className="mobile-protector">
+                            <div className="protector-image">
                               <img src="images/mobile-protector.PNG" alt="protector" />
                             </div>
-                            <div class="protector-content">
+                            <div className="protector-content">
                               <h5>Ultra Bounce Case...</h5>
-                              <button class="protector-price">$100 USD</button>
+                              <button className="protector-price">$100 USD</button>
                             </div>
                           </div>
                         </div>
-                        <div class="col-sm-3">
-                          <div class="mobile-protector">
-                            <div class="protector-image">
+                        <div className="col-sm-3">
+                          <div className="mobile-protector">
+                            <div className="protector-image">
                               <img src="images/mobile-protector.PNG" alt="protector" />
                             </div>
-                            <div class="protector-content">
+                            <div className="protector-content">
                               <h5>Ultra Bounce Case...</h5>
-                              <button class="protector-price">$100 USD</button>
+                              <button className="protector-price">$100 USD</button>
                             </div>
                           </div>
                         </div>
-                        <div class="col-sm-3">
-                          <div class="mobile-protector">
-                            <div class="protector-image">
+                        <div className="col-sm-3">
+                          <div className="mobile-protector">
+                            <div className="protector-image">
                               <img src="images/mobile-protector.PNG" alt="protector" />
                             </div>
-                            <div class="protector-content">
+                            <div className="protector-content">
                               <h5>Ultra Bounce Case...</h5>
-                              <button class="protector-price">$100 USD</button>
+                              <button className="protector-price">$100 USD</button>
                             </div>
                           </div>
                         </div>
-                        <div class="col-sm-3">
-                          <div class="mobile-protector">
-                            <div class="protector-image">
+                        <div className="col-sm-3">
+                          <div className="mobile-protector">
+                            <div className="protector-image">
                               <img src="images/mobile-protector.PNG" alt="protector" />
                             </div>
-                            <div class="protector-content">
+                            <div className="protector-content">
                               <h5>Ultra Bounce Case...</h5>
-                              <button class="protector-price">$100 USD</button>
+                              <button className="protector-price">$100 USD</button>
                             </div>
                           </div>
                         </div>
@@ -289,12 +288,12 @@ const PhoneSelector = () => {
                             <div className="mobile-protector">
                               <div className="protector-image">
                                 <img
-                                  src={variant.image_src || "images/mobile-protector.PNG"}
+                                  src={variant.image_src}
                                   alt={variant.title}
                                 />
                               </div>
                               <div className="protector-content">
-                                <h5>{variant.title || "Ultra Bounce Case..."}</h5>
+                                <h5>{variant.title}</h5>
                                 <button className="protector-price">
                                   ${variant.price || 100} USD
                                 </button>
@@ -306,8 +305,8 @@ const PhoneSelector = () => {
                     </div>
                   </div>
                   <button id='reload' onClick={handleReload}>Reload</button>
-                  <button id='customization' class="customize"> Customize</button>
-                  <button type="submit" class="custom-button add-card" id='add-to-cart1' onClick={handleAddToCart}>Add To Cart</button>
+                  <button id='customization' className="customize" type="button"> Customize</button>
+                  <button type="submit" className="custom-button add-card" id='add-to-cart1' onClick={handleAddToCart}>Add To Cart</button>
                 </form>
               </div>
             </div>

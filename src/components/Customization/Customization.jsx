@@ -50,6 +50,8 @@ function Customization() {
 
   const [variantId, setVariantId] = useState('');
 
+  const [productId, setProductId] = useState('');
+
   const [productInfo, setProductInfo] = useState({});
 
 
@@ -314,26 +316,30 @@ function Customization() {
     setColors(colorItems);
   }, []);
 
+
   useEffect(() => {
     // Extract the variant_id from the query string
-    const product_id = 8230524256454
-    const searchParams = new URLSearchParams(location.search);
-    const variant_id = searchParams.get('variant');
-    setVariantId(variant_id);
+    // const product_id = localStorage.getItem('selectedDevice') || 8230524256454;
+    // const variant_id = localStorage.getItem('variantId');
+    setProductId(localStorage.getItem('selectedDevice'));
+    setVariantId(localStorage.getItem('variantId'));
 
     const fetchData = async () => {
       try {
         // Define the params object
-        const params = { id: product_id }; // Use product_id from useParams
+        const params = { id: productId }; // Use product_id from useParams
 
         // Add variant_id if it exists
-        if (variant_id) {
-          params.variant_id = variant_id;
+        if (variantId) {
+          params.variant_id = variantId;
         }
 
         // Fetch data with the appropriate params
         const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapi/product/data`, { params });
         const data = response.data.data;
+        console.log('data---------', data.product_base_img);
+        console.log('data11-------', data.product_mask_img);
+
 
         if (data) {
           setBaseImg(data.product_base_img);
@@ -348,7 +354,7 @@ function Customization() {
 
     // Fetch data when component mounts
     fetchData();
-  }, [id, location.search]);
+  }, [productId, variantId]);
 
 
   const handleStyleChange = (item) => {
@@ -410,7 +416,6 @@ function Customization() {
     }
 
     var base64 = localStorage.getItem('base64');
-    console.log('base64------', base64);
     if (base64) {
       var imgElement = document.querySelector('#product-base-img img');
       if (imgElement) {
@@ -442,8 +447,7 @@ function Customization() {
             onExtractImage={handleExtractImage}
             layout={layout}
             gradient={gradientDesign} />
-
-          <div id="myCanvas"></div>
+            <div id="myCanvas"></div>
         </div>
 
         <div className="right-container">
