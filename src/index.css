@@ -353,6 +353,12 @@ div#myCanvas canvas {
   margin: auto;
   display: block;
 }
+
+div#myCanvas1 canvas {
+  width: 650px;
+  margin: auto;
+  display: block;
+}
 .right-container h1.custom-header{display: block!important;}
 .right-container h1.custom-header img{float: right;}
 

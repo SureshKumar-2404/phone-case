@@ -18,7 +18,8 @@ const Pixi = ({
   onExtractImage,
   layout,
   dotDesignColorId,
-  gradient
+  gradient,
+  pageType
 }) => {
   const appRef = useRef(null);
   const maskImageRef = useRef(null);
@@ -37,7 +38,13 @@ const Pixi = ({
         width: 560,
       });
 
-      document.body.querySelector('#myCanvas').appendChild(app.view);
+      if (pageType == 'phone') {
+        document.body.querySelector('#myCanvas').appendChild(app.view);
+      }
+      else {
+        document.body.querySelector('#myCanvas1').appendChild(app.view);
+      }
+
       appRef.current = app; // Store the PIXI Application instance
 
       const loader = new PIXI.Loader();
@@ -100,7 +107,8 @@ const Pixi = ({
     gradient,
     maskImg,
     layout,
-    dotDesignColorId
+    dotDesignColorId,
+    pageType
   ]);
 
   useEffect(() => {
@@ -133,10 +141,7 @@ const Pixi = ({
     }
   };
 
-
   //Monogram Print Layout
-
-  // console.log('messageoutside the if condition-----', messages);
 
   const gradientDesignTemplate = `
   precision mediump float;
@@ -728,7 +733,13 @@ const Pixi = ({
 
   return (
     <div>
-      <div id="myCanvas"></div>
+      {pageType == 'phone' && (
+        <div id="myCanvas"></div>
+      )}
+      {pageType == 'custom' && (
+        <div id="myCanvas1"></div>
+      )}
+
     </div>
   );
 };

@@ -74,9 +74,7 @@ function Customization() {
       thumnailDesign: thumnailDesign,
       uLineColor: uLineColor
     }));
-
-  }, [inputValue, fontItems, baseImg, maskImg, font, layoutItems, layout, colortext, styles, selectedStyle, designs, colors, boxDesignColor, dotDesignColorId, dotDesignColor, gradientDesign, thumnailDesign, layoutColor, errorMessage]);
-  // console.log('layoutvalue1111222-----------', layout);
+  }, [inputValue, fontItems, baseImg, maskImg, font, layoutItems, layout, colortext, styles, selectedStyle, designs, colors, boxDesignColor, dotDesignColorId, dotDesignColor, gradientDesign, thumnailDesign, layoutColor, uLineColor, errorMessage]);
   const handleInputChange = (event) => {
     let value = event.target.value;
     const maxLength = layout === 'layout4' ? 3 : 8;
@@ -337,9 +335,6 @@ function Customization() {
         // Fetch data with the appropriate params
         const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapi/product/data`, { params });
         const data = response.data.data;
-        console.log('data---------', data.product_base_img);
-        console.log('data11-------', data.product_mask_img);
-
 
         if (data) {
           setBaseImg(data.product_base_img);
@@ -446,8 +441,10 @@ function Customization() {
             maskImg={maskImg}
             onExtractImage={handleExtractImage}
             layout={layout}
-            gradient={gradientDesign} />
-            <div id="myCanvas"></div>
+            gradient={gradientDesign}
+            pageType='custom'
+          />
+          <div id="myCanvas1"></div>
         </div>
 
         <div className="right-container">
@@ -571,7 +568,7 @@ function Customization() {
           </div>
 
 
-          <button className='complete' onClick={handleCompleteClick}>Complete</button>
+          <button className='complete' type="button" onClick={handleCompleteClick}>Complete</button>
 
         </div>
       </div>

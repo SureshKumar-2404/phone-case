@@ -13,6 +13,8 @@ const PhoneSelector = () => {
   const [pixiMaskImg, setPixiMaskImg] = useState('');
   const [variantId, setVariantId] = useState('');
   const [variantBaseImg, setVariantBaseImg] = useState('');
+  const [variantTitle, setVariantTitle] = useState('');
+  const [variantPrice, setVariantPrice] = useState('');
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -74,6 +76,7 @@ const PhoneSelector = () => {
 
   const handleDeviceChange = async (event) => {
     const productId = event.target.value;
+
     setSelectedDevice(productId);
     localStorage.setItem('selectedDevice', productId);
     setProductInfo({});
@@ -81,8 +84,18 @@ const PhoneSelector = () => {
     if (productId) {
       try {
         const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapi/products/${productId}`);
-        setProductInfo(response.data);
-        localStorage.setItem('productInfo', JSON.stringify(response.data));
+        const productData = response.data;
+        setProductInfo(productData);
+        localStorage.setItem('productInfo', JSON.stringify(productData));
+
+        // Automatically select the first available variant by default
+        if (productData.variants && productData.variants.length > 0) {
+          const firstVariant = productData.variants[0];
+          setVariantId(firstVariant.variant_id);
+          setVariantBaseImg(firstVariant.image_src);
+          setVariantTitle(firstVariant.title);
+          setVariantPrice(firstVariant.price);
+        }
       } catch (error) {
         console.error('Error fetching product details:', error);
       }
@@ -145,8 +158,6 @@ const PhoneSelector = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      console.log('Added to cart:', response.data);
     } catch (error) {
       console.error('Error adding to cart:', error);
     }
@@ -160,43 +171,49 @@ const PhoneSelector = () => {
   return (
     <div>
 
-      <div class="container">
-        <main class="caseus">
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="image-left">
-              {productInfo.title && pixiMaskImg && (
-                <Pixi baseImg={variantBaseImg || productInfo.image_src}
-                  maskImg={pixiMaskImg}
-                  font={pixiState.font}
-                  layout={pixiState.layout}
-                  colortext={pixiState.colortext}
-                  selectedStyle={pixiState.selectedStyle || 'Simple'}
-                  boxDesignColor={pixiState.boxDesignColor}
-                  dotDesignColorId={pixiState.dotDesignColorId}
-                  dotDesignColor={pixiState.dotDesignColor}
-                  gradientDesign={pixiState.gradientDesign}
-                  thumnailDesign={pixiState.thumnailDesign}
-                  uLineColor={pixiState.uLineColor}
-                  inputValue={pixiState.inputValue || ''} />
-              )}
+      <div className="container">
+        <main className="caseus">
+          <div className="row">
+            <div className="col-sm-6">
+              <div className="image-left">
+                {productInfo.title && pixiMaskImg ? (
+                  <Pixi
+                    baseImg={variantBaseImg || productInfo.image_src}
+                    maskImg={pixiMaskImg}
+                    font={pixiState.font}
+                    layout={pixiState.layout}
+                    colortext={pixiState.colortext}
+                    selectedStyle={pixiState.selectedStyle || 'Simple'}
+                    boxDesignColor={pixiState.boxDesignColor}
+                    dotDesignColorId={pixiState.dotDesignColorId}
+                    dotDesignColor={pixiState.dotDesignColor}
+                    gradient={pixiState.gradientDesign}
+                    thumnailDesign={pixiState.thumnailDesign}
+                    uLineColor={pixiState.uLineColor}
+                    inputValue={pixiState.inputValue || ''}
+                    pageType='phone'
+                  />
+                ) : (
+                  <img
+                    src="https://cdn.shopify.com/s/files/1/0611/3879/6742/files/base_iphone-15-pro-max_16006058_natural-titanium.png?v=1718360252"
+                    alt="Default Image"
+                    style={{ width: "55%", margin: "auto", display: "block" }}
+                  />
+                )}
               </div>
+
             </div>
 
-            <div class="col-sm-6">
-              <div class="right">
-                <h1>Impact Ultra Hd Screen Protector</h1>
-                <div class="payment-section">
-                  <h3>$42 USD</h3>
-                  <h4><del>$60 USD</del></h4>
-                  <button class="free-shipping">
-                    Free Shipping
-                  </button>
+            <div className="col-sm-6">
+              <div className="right">
+                <h1>{variantTitle || productInfo.title}</h1>
+                <div className="payment-section">
+                  <h3>{variantPrice}</h3>
                 </div>
 
-                <form action="">
-                  <div class="form-group">
-                    <label for="first-select">Select Brand:</label>
+                <div className="form-group-parent">
+                  <div className="form-group">
+                    <label htmlFor="first-select">Select Brand:</label>
                     <select id="first-select" name="first-select" value={selectedCompany} onChange={handleCompanyChange}>
                       <option value="">Select Company</option>
                       {companies.map((company) => (
@@ -206,9 +223,9 @@ const PhoneSelector = () => {
                       ))}
                     </select>
                   </div>
-                  <div class="form-group">
-                    <label for="second-select">Select Device:</label>
-                    <select id="second-select" name="second-select value={selectedDevice} onChange={handleDeviceChange} disabled={!devices.length}">
+                  <div className="form-group">
+                    <label htmlFor="second-select">Select Device:</label>
+                    <select id="second-select" name="second-select" value={selectedDevice} onChange={handleDeviceChange} disabled={!devices.length}>
                       <option value="">Select Device</option>
                       {devices.map((device) => (
                         <option key={device.product_id} value={device.product_id}>
@@ -229,7 +246,13 @@ const PhoneSelector = () => {
                                 <img
                                   src={variant.image_src || "images/mobile-protector.PNG"}
                                   alt={variant.title}
-                                />
+                                  onClick={() => {
+                                    console.log("hello------111");
+                                    setVariantId(variant.variant_id);
+                                    setVariantBaseImg(variant.image_src);
+                                    setVariantTitle(variant.title);
+                                    setVariantPrice(variant.price);
+                                  }} />
                               </div>
                               <div className="protector-content">
                                 <h5>{variant.title || "Ultra Bounce Case..."}</h5>
@@ -243,17 +266,12 @@ const PhoneSelector = () => {
                       </div>
                     </div>
                   </div>
-                  <button class="customize" id='customization'><img src="" /> Customize</button>
-                  <button type="submit" class="add-card" id='add-to-cart' onClick={handleAddToCart}>Add To Cart</button>
+                  <button type="button" className="customize" id='customization'><img src="" /> Customize</button>
+                  <button type="button" className="add-card" id='add-to-cart1' onClick={handleAddToCart}>Add To Cart</button>
                   <button id='reload' onClick={handleReload}>Reload</button>
-                </form>
+                </div>
               </div>
             </div>
-
-
-
-
-           
           </div>
         </main>
       </div>
