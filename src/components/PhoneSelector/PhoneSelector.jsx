@@ -11,7 +11,7 @@ const PhoneSelector = () => {
   const [productInfo, setProductInfo] = useState(JSON.parse(localStorage.getItem('productInfo')) || {});
   const [pixiState, setPixiState] = useState(JSON.parse(localStorage.getItem('pixiState')) || {});
   const [pixiMaskImg, setPixiMaskImg] = useState('');
-  const [variantId, setVariantId] = useState('');
+  const [variantId, setVariantId] = useState(((localStorage.getItem('variantId')) || ''));
   const [variantBaseImg, setVariantBaseImg] = useState('');
   const [variantTitle, setVariantTitle] = useState('');
   const [variantPrice, setVariantPrice] = useState('');
@@ -74,6 +74,41 @@ const PhoneSelector = () => {
     }
   };
 
+  useEffect(() => {
+    localStorage.setItem('variantId', variantId);
+    localStorage.setItem('pixiMaskImg', pixiMaskImg);
+    localStorage.setItem('variantBaseImg', variantBaseImg);
+    localStorage.setItem('variantTitle', variantTitle);
+    localStorage.setItem('variantPrice', variantPrice);
+  }, [variantId, pixiMaskImg, variantBaseImg, variantTitle, variantPrice]);
+
+  // const handleDeviceChange = async (event) => {
+  //   const productId = event.target.value;
+
+  //   setSelectedDevice(productId);
+  //   localStorage.setItem('selectedDevice', productId);
+  //   setProductInfo({});
+
+  //   if (productId) {
+  //     try {
+  //       const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapi/products/${productId}`);
+  //       const productData = response.data;
+  //       setProductInfo(productData);
+  //       localStorage.setItem('productInfo', JSON.stringify(productData));
+
+  //       // Automatically select the first available variant by default
+  //       if (productData.variants && productData.variants.length > 0) {
+  //         const firstVariant = productData.variants[0];
+  //         setVariantId(firstVariant.variant_id);
+  //         setVariantBaseImg(firstVariant.image_src);
+  //         setVariantTitle(firstVariant.title);
+  //         setVariantPrice(firstVariant.price);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching product details:', error);
+  //     }
+  //   }
+  // };
   const handleDeviceChange = async (event) => {
     const productId = event.target.value;
 
@@ -88,8 +123,25 @@ const PhoneSelector = () => {
         setProductInfo(productData);
         localStorage.setItem('productInfo', JSON.stringify(productData));
 
-        // Automatically select the first available variant by default
-        if (productData.variants && productData.variants.length > 0) {
+        // Check if variant data is already in localStorage
+        const storedVariantId = localStorage.getItem('variantId');
+        const storedVariantBaseImg = localStorage.getItem('variantBaseImg');
+        const storedVariantTitle = localStorage.getItem('variantTitle');
+        const storedVariantPrice = localStorage.getItem('variantPrice');
+
+        console.log(' storedVariantId---------', storedVariantId);
+        console.log(' storedVariantBaseImg---------', storedVariantBaseImg);
+        console.log(' storedVariantTitle---------', storedVariantTitle);
+        console.log(' storedVariantPrice---------', storedVariantPrice);
+
+        // If variant data is in localStorage, use it, otherwise use the first available variant
+        if (storedVariantId && storedVariantBaseImg && storedVariantTitle && storedVariantPrice) {
+          setVariantId(storedVariantId);
+          setVariantBaseImg(storedVariantBaseImg);
+          setVariantTitle(storedVariantTitle);
+          setVariantPrice(storedVariantPrice);
+        } else if (productData.variants && productData.variants.length > 0) {
+          // If no data in localStorage, select the first available variant
           const firstVariant = productData.variants[0];
           setVariantId(firstVariant.variant_id);
           setVariantBaseImg(firstVariant.image_src);
@@ -101,6 +153,7 @@ const PhoneSelector = () => {
       }
     }
   };
+
 
   const filteredVariants = productInfo.variants
     ? productInfo.variants.filter(variant => variant.title !== "Default Title")
@@ -266,6 +319,10 @@ const PhoneSelector = () => {
                       </div>
                     </div>
                   </div>
+                  {/* Hidden input fields for product_id and variant_id */}
+                  <input type="hidden" id="product_id" name="product_id" value={productInfo.product_id} />
+                  <input type="hidden" id="variant_id" name="variant_id" value={variantId} />
+
                   <button type="button" className="customize" id='customization'><img src="" /> Customize</button>
                   <button type="button" className="add-card" id='add-to-cart1' onClick={handleAddToCart}>Add To Cart</button>
                   <button id='reload' onClick={handleReload}>Reload</button>

@@ -314,41 +314,48 @@ function Customization() {
     setColors(colorItems);
   }, []);
 
-
   useEffect(() => {
-    // Extract the variant_id from the query string
-    // const product_id = localStorage.getItem('selectedDevice') || 8230524256454;
-    // const variant_id = localStorage.getItem('variantId');
-    setProductId(localStorage.getItem('selectedDevice'));
-    setVariantId(localStorage.getItem('variantId'));
+    // Get the values from the hidden input fields
+    const productIdValue = document.getElementById('product_id').value || localStorage.getItem('selectedDevice');
+    const variantIdValue = document.getElementById('variant_id').value || localStorage.getItem('variantId');
+
+    // Set state with the hidden field values
+    setProductId(productIdValue);
+    setVariantId(variantIdValue);
 
     const fetchData = async () => {
       try {
-        // Define the params object
-        const params = { id: productId }; // Use product_id from useParams
+        // Use productId and variantId in the params object
+        const params = { id: productIdValue };
 
         // Add variant_id if it exists
-        if (variantId) {
-          params.variant_id = variantId;
+        if (variantIdValue) {
+          params.variant_id = variantIdValue;
         }
 
-        // Fetch data with the appropriate params
-        const response = await axios.get(`https://caseusshopify.enactstage.com/caseusapi/product/data`, { params });
+        // Fetch data from API using axios
+        const response = await axios.get('https://caseusshopify.enactstage.com/caseusapi/product/data', { params });
         const data = response.data.data;
 
         if (data) {
+          // Set base and mask images
           setBaseImg(data.product_base_img);
           setMaskImg(data.product_mask_img);
-          localStorage.setItem('product_width', data.product_width);  // Save width to localStorage
-          localStorage.setItem('product_height', data.product_height);  // Save height to localStorage
+
+          // Save width and height to localStorage
+          localStorage.setItem('product_width', data.product_width);
+          localStorage.setItem('product_height', data.product_height);
         }
       } catch (error) {
         console.error('Error fetching product data:', error);
       }
     };
 
-    // Fetch data when component mounts
-    fetchData();
+    // Call the fetchData function if productId is available
+    if (productIdValue) {
+      fetchData();
+    }
+
   }, [productId, variantId]);
 
 
