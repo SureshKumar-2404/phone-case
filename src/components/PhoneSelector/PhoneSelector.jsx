@@ -1,5 +1,5 @@
 import Pixi from '../Pixi/Pixi';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './PhoneSelector.css';
 
@@ -183,38 +183,50 @@ const PhoneSelector = () => {
   //   }
   // };
 
-  const handleAddToCart = async () => {
-    const text = localStorage.getItem('text');
-    let variantToAdd;
+  const appRef = useRef(null);
 
-    if (hasValidVariants && variantId) {
-      // Use selected variant
-      variantToAdd = variantId;
-    } else {
-      // Use default variant if no valid variants are present
-      variantToAdd = productInfo.variants[0]?.variant_id;
-    }
-
-    try {
-      // Create a new FormData object
-      const formData = new FormData();
-      formData.append('id', variantToAdd);
-      formData.append('quantity', 1);
-      formData.append('properties[customization]', text);
-      formData.append('properties[File_upload]', "hello");
-      formData.append('properties[Base64Img]', "https://caseus.s3.ap-south-1.amazonaws.com/files/1725521615524-design.png");
-
-
-      // Send form data using axios
-      const response = await axios.post('/cart/add.js', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    }
+  const handleExtractImage = (extractImage) => {
+    // Attach extractImage function to a ref or state to use it later
+    appRef.current = extractImage;
   };
+  const handleCompleteClick = () => {
+    if (appRef.current) {
+      appRef.current();
+    }
+  }
+
+  // const handleAddToCart = async () => {
+  //   const text = localStorage.getItem('text');
+  //   let variantToAdd;
+
+  //   if (hasValidVariants && variantId) {
+  //     // Use selected variant
+  //     variantToAdd = variantId;
+  //   } else {
+  //     // Use default variant if no valid variants are present
+  //     variantToAdd = productInfo.variants[0]?.variant_id;
+  //   }
+
+  //   try {
+  //     // Create a new FormData object
+  //     const formData = new FormData();
+  //     formData.append('id', variantToAdd);
+  //     formData.append('quantity', 1);
+  //     formData.append('properties[customization]', text);
+  //     formData.append('properties[File_upload]', "hello");
+  //     formData.append('properties[Base64Img]', "https://caseus.s3.ap-south-1.amazonaws.com/files/1725521615524-design.png");
+
+
+  //     // Send form data using axios
+  //     const response = await axios.post('/cart/add.js', formData, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.error('Error adding to cart:', error);
+  //   }
+  // };
 
 
   const handleReload = () => {
@@ -244,6 +256,7 @@ const PhoneSelector = () => {
                     thumnailDesign={pixiState.thumnailDesign}
                     uLineColor={pixiState.uLineColor}
                     inputValue={pixiState.inputValue || ''}
+                    onExtractImage={handleExtractImage}
                     pageType='phone'
                   />
                 ) : (
@@ -305,6 +318,7 @@ const PhoneSelector = () => {
                                     setVariantBaseImg(variant.image_src);
                                     setVariantTitle(variant.title);
                                     setVariantPrice(variant.price);
+                                    handleCompleteClick();
                                   }} />
                               </div>
                               <div className="protector-content">
@@ -322,9 +336,9 @@ const PhoneSelector = () => {
                   {/* Hidden input fields for product_id and variant_id */}
                   <input type="hidden" id="product_id" name="product_id" value={productInfo.product_id} />
                   <input type="hidden" id="variant_id" name="variant_id" value={variantId} />
-
+                  <input type="file" id="file_upload" name="file_upload" class="d-none" />
                   <button type="button" className="customize" id='customization'><img src="" /> Customize</button>
-                  <button type="button" className="add-card" id='add-to-cart1' onClick={handleAddToCart}>Add To Cart</button>
+                  <button type="button" className="add-card" id='add-to-cart1'>Add To Cart</button>
                   <button id='reload' onClick={handleReload}>Reload</button>
                 </div>
               </div>

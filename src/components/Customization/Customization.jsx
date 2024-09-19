@@ -54,6 +54,9 @@ function Customization() {
 
   const [productInfo, setProductInfo] = useState({});
 
+  const [productWidth, setProductWidth] = useState(0);
+
+  const [productHeight, setProductHeight] = useState(0);
 
   // const navigate = useNavigate();
   // const params = useParams();
@@ -314,10 +317,54 @@ function Customization() {
     setColors(colorItems);
   }, []);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   // Get the values from the hidden input fields
+  //   const productIdValue = document.getElementById('product_id').value || localStorage.getItem('selectedDevice');
+  //   const variantIdValue = document.getElementById('variant_id').value || localStorage.getItem('variantId');
+
+  //   // Set state with the hidden field values
+  //   setProductId(productIdValue);
+  //   setVariantId(variantIdValue);
+
+  //   const fetchData = async () => {
+  //     try {
+  //       // Use productId and variantId in the params object
+  //       const params = { id: productIdValue };
+
+  //       // Add variant_id if it exists
+  //       if (variantIdValue) {
+  //         params.variant_id = variantIdValue;
+  //       }
+
+  //       // Fetch data from API using axios
+  //       const response = await axios.get('https://caseusshopify.enactstage.com/caseusapi/product/data', { params });
+  //       const data = response.data.data;
+
+  //       if (data) {
+  //         // Set base and mask images
+  //         setBaseImg(data.product_base_img);
+  //         setMaskImg(data.product_mask_img);
+
+  //         // Save width and height to localStorage
+  //         localStorage.setItem('product_width', data.product_width);
+  //         localStorage.setItem('product_height', data.product_height);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching product data:', error);
+  //     }
+  //   };
+
+  //   // Call the fetchData function if productId is available
+  //   if (productIdValue) {
+  //     fetchData();
+  //   }
+
+  // }, [productId, variantId]);
+
+  const reload = () => {
     // Get the values from the hidden input fields
-    const productIdValue = document.getElementById('product_id').value || localStorage.getItem('selectedDevice');
-    const variantIdValue = document.getElementById('variant_id').value || localStorage.getItem('variantId');
+    const productIdValue = 8230524256454 || document.getElementById('product_id').value || localStorage.getItem('selectedDevice');
+    const variantIdValue = 44048207610054 || document.getElementById('variant_id').value || localStorage.getItem('variantId');
 
     // Set state with the hidden field values
     setProductId(productIdValue);
@@ -345,6 +392,9 @@ function Customization() {
           // Save width and height to localStorage
           localStorage.setItem('product_width', data.product_width);
           localStorage.setItem('product_height', data.product_height);
+
+          setProductWidth(data.product_width);
+          setProductHeight(data.product_height)
         }
       } catch (error) {
         console.error('Error fetching product data:', error);
@@ -355,8 +405,7 @@ function Customization() {
     if (productIdValue) {
       fetchData();
     }
-
-  }, [productId, variantId]);
+  }
 
 
   const handleStyleChange = (item) => {
@@ -452,6 +501,25 @@ function Customization() {
             pageType='custom'
           />
           <div id="myCanvas1"></div>
+          <div class="d-none">
+            <Pixi selectedStyle={selectedStyle}
+              uLineColor={uLineColor}
+              boxDesignColor={boxDesignColor}
+              dotDesignColorId={dotDesignColorId}
+              dotDesignColor={dotDesignColor}
+              thumnailDesign={thumnailDesign}
+              inputValue={inputValue}
+              colortext={colortext}
+              font={font}
+              baseImg={`https://raghavji.sirv.com/gvff3.jpg?cw=${productWidth + 40}&ch=${productHeight}`}
+              maskImg={maskImg}
+              onExtractImage={handleExtractImage}
+              layout={layout}
+              gradient={gradientDesign}
+              pageType='custom'
+              isExportImg="1"
+            />
+          </div>
         </div>
 
         <div className="right-container">
@@ -576,7 +644,7 @@ function Customization() {
 
 
           <button className='complete' type="button" onClick={handleCompleteClick}>Complete</button>
-
+          <button className='reload_customization' type="button" onClick={reload}>Reload_customization</button>'
         </div>
       </div>
     </>

@@ -3,7 +3,6 @@ import * as PIXI from 'pixi.js';
 import designs from './designs.js';
 import { log } from 'react-modal/lib/helpers/ariaAppHider.js';
 
-
 const Pixi = ({
   selectedStyle,
   uLineColor,
@@ -19,18 +18,15 @@ const Pixi = ({
   layout,
   dotDesignColorId,
   gradient,
-  pageType
+  pageType,
+  isExportImg
 }) => {
   const appRef = useRef(null);
   const maskImageRef = useRef(null);
   const thumnailImageRef = useRef(null);
 
-  // State to store base64 image data
-  const [base64Image, setBase64Image] = useState('');
-
   useEffect(() => {
     if (baseImg && maskImg) {
-
       const app = new PIXI.Application({
         backgroundColor: 0xffffff,
         resolution: 2,
@@ -50,6 +46,7 @@ const Pixi = ({
       const loader = new PIXI.Loader();
       loader.add('base', baseImg);
       loader.add('mask', maskImg);
+      // loader.add('white', whiteImg);
 
       if (thumnailDesign) {
         loader.add('thumnail', thumnailDesign);
@@ -65,6 +62,7 @@ const Pixi = ({
         maskImage.x = app.screen.width / 2;
         maskImage.y = app.screen.height / 2;
         maskImageRef.current = maskImage;
+
 
         app.stage.addChild(baseImage);
         app.stage.addChild(maskImage);
@@ -718,6 +716,11 @@ const Pixi = ({
 
     if (bottomText) {
       app.stage.addChild(bottomText);
+    }
+    if (isExportImg) {
+      setTimeout(() => {
+        extractImage(maskImage);
+      }, 1500);
     }
   };
 
